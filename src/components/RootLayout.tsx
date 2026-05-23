@@ -14,8 +14,11 @@ function ScrollToTop() {
 export default function RootLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
+      <a href="#main" className="skip-link">
+        Hopp til hovedinnhold
+      </a>
       <Header />
-      <main id="main" className="flex-1">
+      <main id="main" className="flex-1" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

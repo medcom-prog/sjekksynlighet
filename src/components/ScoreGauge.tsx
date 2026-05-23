@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { tierFromScore, tierLabel, tierTone, type ScanTier } from "@/lib/scan";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 type Props = {
   score: number;
@@ -31,10 +32,15 @@ export function ScoreGauge({ score, size = 260, animateMs = 1100 }: Props) {
   const circumference = Math.PI * radius; // halvbue
   const offset = circumference - (Math.max(0, Math.min(100, score)) / 100) * circumference;
 
-  const [displayScore, setDisplayScore] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+  const [displayScore, setDisplayScore] = useState(() => (prefersReducedMotion ? score : 0));
   const raf = useRef<number | null>(null);
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayScore(score);
+      return;
+    }
     const start = performance.now();
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / animateMs);
@@ -46,7 +52,7 @@ export function ScoreGauge({ score, size = 260, animateMs = 1100 }: Props) {
     return () => {
       if (raf.current !== null) cancelAnimationFrame(raf.current);
     };
-  }, [score, animateMs]);
+  }, [score, animateMs, prefersReducedMotion]);
 
   const height = size / 2 + 20;
 

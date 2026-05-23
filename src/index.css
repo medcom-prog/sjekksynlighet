@@ -74,6 +74,36 @@
     margin: 0;
   }
   input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+
+  /* Accessibility: respect users who prefer reduced motion.
+     Kills our pulse-soft, accordion-open, score-rise, fade-in, hero
+     halo loops + any tailwindcss-animate keyframes. Transitions
+     collapse to effectively instant so the UI still updates visually
+     but never jitters or flashes. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Strong focus ring for keyboard navigation. Browsers' default focus
+     style is uneven across inputs/buttons/links; locking to one
+     accent-coloured ring keeps the visual signal consistent. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--accent));
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Skip link for keyboard users — appears on focus only. */
+  .skip-link {
+    @apply absolute left-3 top-3 z-50 -translate-y-20 rounded-lg
+           bg-accent px-4 py-2 text-sm font-medium text-accent-foreground
+           shadow-lg transition-transform focus:translate-y-0;
+  }
 }
 
 @layer components {
