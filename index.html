@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sjekksynlighet — Gratis AI-synlighetscheck for nettsider</title>
+    <meta name="description" content="Sjekk hvor synlig nettsiden din er for ChatGPT, Perplexity, Google AI Overviews og klassisk Google-søk. Gratis teknisk analyse på 30 sekunder — uten registrering." />
+    <meta name="author" content="Sjekksynlighet" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="theme-color" content="#0D9488" />
+    <link rel="canonical" href="https://sjekksynlighet.no/" />
+    <link rel="alternate" hreflang="nb-NO" href="https://sjekksynlighet.no/" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Sjekksynlighet — Gratis AI-synlighetscheck" />
+    <meta property="og:description" content="Hvor synlig er nettsiden din for ChatGPT, Perplexity og Google AI Overviews? Få en gratis teknisk analyse på 30 sekunder." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sjekksynlighet.no/" />
+    <meta property="og:image" content="https://sjekksynlighet.no/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Sjekksynlighet" />
+    <meta property="og:locale" content="nb_NO" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sjekksynlighet — Gratis AI-synlighetscheck" />
+    <meta name="twitter:description" content="Hvor synlig er nettsiden din for ChatGPT, Perplexity og Google AI Overviews? Få en gratis analyse på 30 sekunder." />
+    <meta name="twitter:image" content="https://sjekksynlighet.no/og-image.png" />
+
+    <!-- Fonts: Inter (UI + body), DM Sans (display), JetBrains Mono (score number).
+         Non-blocking with display=swap, preconnect for fast handshake. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600;9..40,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600;9..40,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Pre-rendered entity schema for non-JS crawlers.
+         sjekksynlighet.no is a React SPA — bots that don't execute
+         JavaScript (GPTBot, ClaudeBot, CCBot, OAI-SearchBot, etc.)
+         only see this HTML shell. The static @graph below gives them
+         a complete entity picture: who runs the tool, what it does,
+         how it's accessed. Per-route schema (Service, Breadcrumb)
+         lives in scripts/prerender-routes.mjs and adds to this. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://sjekksynlighet.no/#organization",
+          "name": "Sjekksynlighet",
+          "alternateName": "Sjekksynlighet.no",
+          "url": "https://sjekksynlighet.no",
+          "logo": "https://sjekksynlighet.no/logo.png",
+          "description": "Sjekksynlighet er et gratis, nøytralt verktøy som analyserer hvor synlig en nettside er for moderne AI-søkemotorer og klassisk Google-søk. Vi gir teknisk score og konkrete forbedringspunkter på 30 sekunder.",
+          "inLanguage": "nb-NO",
+          "areaServed": { "@type": "Country", "name": "Norway" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://sjekksynlighet.no/#webapplication",
+          "name": "Sjekksynlighet — AI-synlighetscheck",
+          "url": "https://sjekksynlighet.no",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "SEO og AEO-analyse",
+          "operatingSystem": "Web",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "inLanguage": "nb-NO",
+          "isAccessibleForFree": true,
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "NOK",
+            "availability": "https://schema.org/InStock"
+          },
+          "featureList": [
+            "Schema.org JSON-LD-analyse (Organization, LocalBusiness, FAQ, Service)",
+            "AI-crawler robots.txt-sjekk (GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot m.fl.)",
+            "Canonical og sitemap.xml-validering",
+            "llms.txt-deteksjon",
+            "Apex vs www 301-redirect-sjekk",
+            "sameAs entity-graph mot Brønnøysund, Proff, 1881",
+            "Meta-tag og Open Graph-analyse",
+            "0–100 AEO-score med konkrete forbedringspunkter"
+          ],
+          "provider": { "@id": "https://sjekksynlighet.no/#organization" }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://sjekksynlighet.no/#website",
+          "url": "https://sjekksynlighet.no",
+          "name": "Sjekksynlighet",
+          "description": "Gratis AI-synlighetscheck for nettsider",
+          "inLanguage": "nb-NO",
+          "publisher": { "@id": "https://sjekksynlighet.no/#organization" }
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://sjekksynlighet.no/#webpage",
+          "url": "https://sjekksynlighet.no/",
+          "name": "Sjekksynlighet — Gratis AI-synlighetscheck",
+          "isPartOf": { "@id": "https://sjekksynlighet.no/#website" },
+          "about": { "@id": "https://sjekksynlighet.no/#webapplication" },
+          "inLanguage": "nb-NO",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "[data-quick-answer]"]
+          },
+          "mainContentOfPage": {
+            "@type": "WebPageElement",
+            "cssSelector": "main"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://sjekksynlighet.no/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Hva sjekker dere egentlig?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Vi kjører ti tekniske kontroller mot domenet ditt: HTTP-respons, title og meta description, canonical-tag, Schema.org JSON-LD (Organization, LocalBusiness, FAQ), robots.txt med tilgang for elleve AI-crawlere, sitemap.xml med fersk lastmod, llms.txt, www↔apex 301-redirect, sameAs-lenker til Brønnøysund/Proff/1881, og at canonical-URL faktisk resolver."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Er sjekken gratis?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, helt gratis. Du trenger ikke å registrere konto. Vi spør om e-post og telefonnummer fordi vi sender deg resultatet og kan kontakte deg om du ønsker hjelp til å forbedre score-en. Telefonnummer er valgfritt."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hvor lang tid tar sjekken?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Mellom 8 og 20 sekunder, avhengig av hvor raskt nettsiden din svarer på forespørslene våre."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hva skjer med dataene mine?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Vi lagrer e-post, telefonnummer, domene og resultat i en sikker database. Vi bruker dataene til å sende deg resultatet og eventuelt kontakte deg om oppfølging. Du kan kreve sletting når som helst. Full GDPR-policy ligger på /personvern."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hva betyr AEO?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AEO står for Answer Engine Optimization og handler om å gjøre nettsiden din synlig for AI-svarmotorer som ChatGPT, Gemini, Perplexity og Google AI Overviews. Det er en utvidelse av klassisk SEO som handler om Google-resultater."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hvorfor 0–100 score?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Hver av de ti sjekkene gir mellom 0 og 10 poeng, basert på hvor god implementeringen er. Vi summerer til en total fra 0 til 100 og deler inn i fem nivåer: Kritisk (0–30), Svak (31–50), OK (51–70), God (71–84) og Ypperste klasse (85–100)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Blir jeg ringt opp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Hvis du legger inn telefonnummer, kan vi ringe deg for å gå gjennom resultatet og foreslå tiltak. Telefonnummer er valgfritt — du får resultatet uansett på e-post."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand palette — varm krem-bakgrunn + deep teal accent */
+    --background: 60 24% 97%;          /* #FAFAF7 */
+    --foreground: 215 33% 9%;          /* #0F1419 */
+
+    --muted: 60 12% 92%;
+    --muted-foreground: 215 14% 38%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 33% 9%;
+
+    --border: 60 8% 87%;
+    --input: 60 8% 87%;
+    --ring: 174 84% 32%;               /* teal ring */
+
+    --accent: 174 84% 32%;             /* #0D9488 — deep teal */
+    --accent-soft: 173 80% 40%;        /* #14B8A6 */
+    --accent-foreground: 0 0% 100%;
+
+    --warn: 21 90% 53%;                /* #F97316 — kritisk-issues */
+    --warn-foreground: 0 0% 100%;
+
+    --good: 158 64% 40%;               /* #10B981 — OK-checks */
+    --good-foreground: 0 0% 100%;
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv01", "cv02", "cv11";
+    background-image:
+      radial-gradient(
+        circle at 0% 0%,
+        hsl(var(--accent) / 0.04) 0,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 100% 100%,
+        hsl(var(--accent-soft) / 0.05) 0,
+        transparent 60%
+      );
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background-color: hsl(var(--accent) / 0.18);
+    color: hsl(var(--foreground));
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Hide scrollbars in number inputs */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+}
+
+@layer components {
+  /* Quick Answer block — first paragraph after H1.
+     Triple-purpose:
+       1) Direct answer for AI citation extraction
+       2) Speakable selector hook (data-quick-answer)
+       3) Visual emphasis as opening lede */
+  .quick-answer {
+    @apply rounded-2xl border border-accent/15 bg-white/70
+           backdrop-blur px-5 py-4 sm:px-6 sm:py-5
+           text-base sm:text-[1.0625rem] leading-relaxed text-foreground/80;
+  }
+
+  .quick-answer strong {
+    @apply text-accent font-semibold;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty  { text-wrap: pretty;  }
+}
