@@ -111,11 +111,14 @@
      Triple-purpose:
        1) Direct answer for AI citation extraction
        2) Speakable selector hook (data-quick-answer)
-       3) Visual emphasis as opening lede */
+       3) Visual emphasis as opening lede
+     Left-accent-stripe via box-shadow inset gir tydelig hierarki
+     uten å introdusere en ekstra border-left som bryter rounded-corners. */
   .quick-answer {
-    @apply rounded-2xl border border-accent/15 bg-white/70
+    @apply relative rounded-2xl border border-accent/15 bg-white/75
            backdrop-blur px-5 py-4 sm:px-6 sm:py-5
-           text-base sm:text-[1.0625rem] leading-relaxed text-foreground/80;
+           text-base sm:text-[1.0625rem] leading-relaxed text-foreground/80
+           shadow-[inset_3px_0_0_0_hsl(var(--accent))];
   }
 
   .quick-answer strong {
