@@ -196,35 +196,39 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="border-y border-border/60 bg-white/40 py-16 sm:py-20">
+      <section className="relative border-y border-border/70 bg-white py-16 sm:py-20">
+        <SectionDivider position="top" />
         <div className="container mx-auto max-w-6xl">
           <SectionHeader
             eyebrow="Slik fungerer det"
             title="Fra domene til score på 30 sekunder"
             sub="Ingen API-nøkler å sette opp, ingen browser-utvidelser å installere. Vi gjør alt arbeidet på serveren vår."
           />
-          <ol className="mt-12 grid gap-6 sm:grid-cols-3">
+          <ol className="mt-12 grid gap-5 sm:grid-cols-3">
             {STEPS.map((s, i) => (
               <li
                 key={s.title}
-                className="relative flex flex-col gap-4 rounded-2xl border border-border bg-background/60 p-6 shadow-sm"
+                className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.25)]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                  <s.icon className="h-5 w-5" aria-hidden />
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-mono text-xs font-bold text-accent/70">
+                <div className="flex items-center justify-between">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
+                    <s.icon className="h-5 w-5" aria-hidden />
+                  </div>
+                  <span className="font-mono text-xs font-bold tracking-wider text-accent">
                     0{i + 1}
                   </span>
-                  <h3 className="font-display text-lg font-semibold">{s.title}</h3>
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <h3 className="font-display text-lg font-semibold leading-tight">
+                  {s.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-foreground/65">
                   {s.body}
                 </p>
               </li>
             ))}
           </ol>
         </div>
+        <SectionDivider position="bottom" />
       </section>
 
       {/* WHAT WE CHECK */}
@@ -238,11 +242,11 @@ export default function Home() {
           {CHECK_DEFINITIONS.map((c, i) => (
             <li
               key={c.id}
-              className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 transition-shadow hover:shadow-md sm:p-6"
+              className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.2)] sm:p-6"
             >
               <span
                 aria-hidden
-                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/10 font-mono text-xs font-bold text-accent"
+                className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 font-mono text-[13px] font-bold text-accent ring-1 ring-inset ring-accent/20 transition-colors group-hover:bg-accent/15"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -250,7 +254,7 @@ export default function Home() {
                 <h3 className="font-display text-[15px] font-semibold text-foreground sm:text-base">
                   {c.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <p className="text-sm leading-relaxed text-foreground/65">
                   {c.what}
                 </p>
               </div>
@@ -260,7 +264,8 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-border/60 bg-white/40 py-16 sm:py-24">
+      <section className="relative border-t border-border/70 bg-white py-16 sm:py-24">
+        <SectionDivider position="top" />
         <div className="container mx-auto max-w-3xl">
           <SectionHeader
             eyebrow="Vanlige spørsmål"
@@ -270,7 +275,7 @@ export default function Home() {
           <Accordion
             type="single"
             collapsible
-            className="mt-10 rounded-2xl border border-border bg-card px-5 sm:px-8"
+            className="mt-10 overflow-hidden rounded-2xl border border-border bg-background/80 px-5 backdrop-blur sm:px-7"
           >
             {FAQS.map((f, i) => (
               <AccordionItem key={i} value={`item-${i}`}>
@@ -283,17 +288,19 @@ export default function Home() {
       </section>
 
       {/* CLOSER */}
-      <section className="container mx-auto max-w-3xl py-16 text-center sm:py-24">
-        <ShieldCheck className="mx-auto h-10 w-10 text-accent/70" aria-hidden />
-        <h2 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+      <section className="container mx-auto max-w-3xl py-20 text-center sm:py-28">
+        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-inset ring-accent/20">
+          <ShieldCheck className="h-7 w-7 text-accent" aria-hidden />
+        </div>
+        <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           Klar til å se hvor du står?
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-pretty text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-xl text-pretty text-foreground/70">
           Skroll opp og fyll inn domenet. Du får en score og en konkret tiltakliste på 30 sekunder — alt kommer også på e-posten din.
         </p>
         <a
           href="#main"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent-soft"
+          className="mt-7 inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_-12px_hsl(var(--accent)/0.65)] transition-colors hover:bg-accent-soft"
         >
           Start sjekken
           <ArrowRight className="h-4 w-4" aria-hidden />
@@ -314,17 +321,37 @@ function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-accent">
+      <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+        <span aria-hidden className="h-px w-6 bg-accent/40" />
         {eyebrow}
+        <span aria-hidden className="h-px w-6 bg-accent/40" />
       </p>
       <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         {title}
       </h2>
       {sub ? (
-        <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">
+        <p className="mx-auto mt-4 max-w-xl text-pretty text-foreground/70">
           {sub}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * Tynn linje med en sentral teal-prikk. Brukes som myk dekor i toppen
+ * og bunnen av "bånd"-seksjoner — gir visuell rytme uten å bruke en
+ * hard divider. Pointer-events-none og aria-hidden.
+ */
+function SectionDivider({ position }: { position: "top" | "bottom" }) {
+  return (
+    <div
+      aria-hidden
+      className={`pointer-events-none absolute inset-x-0 ${
+        position === "top" ? "-top-3" : "-bottom-3"
+      } flex justify-center`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-accent/30 ring-4 ring-background" />
     </div>
   );
 }
