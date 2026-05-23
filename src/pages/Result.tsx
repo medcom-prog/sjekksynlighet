@@ -68,26 +68,26 @@ export default function Result() {
     <section className="container mx-auto max-w-5xl px-4 py-12 sm:py-16">
       {/* HEADER */}
       <div className="flex flex-col items-center gap-2 text-center">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-accent">
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+          <span aria-hidden className="h-px w-6 bg-accent/40" />
           Synlighetscheck
+          <span aria-hidden className="h-px w-6 bg-accent/40" />
         </p>
         <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          Score for {scan.domain}
+          Score for{" "}
+          <a
+            href={`https://${scan.domain}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:decoration-accent"
+          >
+            {scan.domain}
+          </a>
         </h1>
-        <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <Globe className="h-3.5 w-3.5" aria-hidden />
-            <a
-              href={`https://${scan.domain}`}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-foreground hover:underline"
-            >
-              {scan.domain}
-            </a>
-          </span>
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-foreground/55">
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5" aria-hidden />
+            Kjørt{" "}
             {new Date(scan.scannedAt).toLocaleString("nb-NO", {
               dateStyle: "medium",
               timeStyle: "short",
@@ -97,36 +97,43 @@ export default function Result() {
       </div>
 
       {/* GAUGE */}
-      <div className="mx-auto mt-10 flex max-w-3xl flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(13,148,136,0.18)] sm:p-10">
-        <ScoreGauge score={scan.score} />
-        <p
-          data-quick-answer
-          className="quick-answer max-w-xl text-center"
-        >
-          <strong>Kort fortalt:</strong>{" "}
-          {tier === "ypperste"
-            ? "Sterk teknisk grunnmur. Vi finner få eller ingen mangler — sannsynligvis godt posisjonert for AI-siteringer."
-            : tier === "god"
-            ? "Solid baseline. Et par konkrete tiltak vil løfte synligheten til ypperste klasse."
-            : tier === "ok"
-            ? "Tekniske bein er på plass, men sentrale entity- og innholdssignaler mangler. Topp-5 under viser hvor."
-            : tier === "svak"
-            ? "Mange grunnleggende AEO-signaler mangler. Det er fortsatt enkle løft som kan flytte score raskt."
-            : "Stort potensial — flere kritiske signaler mangler. Start med topp-3 i lista under for raskest løft."}
-        </p>
+      <div className="relative mx-auto mt-10 max-w-3xl">
+        <div
+          aria-hidden
+          className="absolute -inset-2 rounded-[28px] bg-gradient-to-br from-accent/10 via-transparent to-accent-soft/10 blur-2xl"
+        />
+        <div className="relative flex flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(13,148,136,0.2)] sm:p-10">
+          <ScoreGauge score={scan.score} />
+          <p
+            data-quick-answer
+            className="quick-answer max-w-xl text-center"
+          >
+            <strong>Kort fortalt:</strong>{" "}
+            {tier === "ypperste"
+              ? "Sterk teknisk grunnmur. Vi finner få eller ingen mangler — sannsynligvis godt posisjonert for AI-siteringer."
+              : tier === "god"
+              ? "Solid baseline. Et par konkrete tiltak vil løfte synligheten til ypperste klasse."
+              : tier === "ok"
+              ? "Tekniske bein er på plass, men sentrale entity- og innholdssignaler mangler. Topp-5 under viser hvor."
+              : tier === "svak"
+              ? "Mange grunnleggende AEO-signaler mangler. Det er fortsatt enkle løft som kan flytte score raskt."
+              : "Stort potensial — flere kritiske signaler mangler. Start med topp-3 i lista under for raskest løft."}
+          </p>
+        </div>
       </div>
 
       {/* TOP ISSUES */}
-      <div className="mt-12">
-        <div className="mb-5 flex items-end justify-between gap-4">
+      <div className="mt-14">
+        <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-accent">
-              Topp-5 mangler
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+              Topp {topIssues.length} mangler
             </p>
-            <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+            <h2 className="mt-1.5 font-display text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
               Det viktigste å fikse først
             </h2>
           </div>
+          <Globe className="hidden h-5 w-5 text-foreground/30 sm:block" aria-hidden />
         </div>
         <div className="grid gap-3">
           {topIssues.map((issue, i) => (
@@ -137,7 +144,7 @@ export default function Result() {
               <p className="font-display text-lg font-semibold text-good">
                 Ingen kritiske mangler funnet
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-foreground/65">
                 Hver av de ti sjekkene scoret fullt eller nær fullt. Bra
                 tekniske grunnmur.
               </p>
@@ -148,13 +155,16 @@ export default function Result() {
 
       {/* ALL CHECKS COLLAPSED */}
       {remainingIssues.length > 0 && (
-        <details className="group mt-10 rounded-2xl border border-border bg-card">
-          <summary className="flex cursor-pointer select-none items-center justify-between gap-3 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:bg-muted/50">
-            <span>Se de resterende {remainingIssues.length} sjekkene</span>
-            <span className="text-xs text-muted-foreground group-open:hidden">Vis</span>
-            <span className="hidden text-xs text-muted-foreground group-open:inline">Skjul</span>
+        <details className="group/details mt-10 overflow-hidden rounded-2xl border border-border bg-card transition-shadow open:shadow-sm">
+          <summary className="flex cursor-pointer select-none items-center justify-between gap-3 px-5 py-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-muted/50">
+            <span>
+              Resterende {remainingIssues.length} sjekker
+            </span>
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent/8 text-accent transition-transform group-open/details:rotate-180">
+              <RotateCcw className="h-3.5 w-3.5 -scale-x-100 rotate-90" aria-hidden />
+            </span>
           </summary>
-          <div className="grid gap-3 border-t border-border/60 px-5 py-5">
+          <div className="grid gap-3 border-t border-border/60 bg-background/40 px-5 py-5">
             {remainingIssues.map((issue) => (
               <IssueCard key={issue.id} issue={issue} />
             ))}
@@ -163,8 +173,8 @@ export default function Result() {
       )}
 
       {/* META */}
-      <div className="mt-12 flex flex-col items-center gap-4 border-t border-border pt-10 text-center">
-        <p className="max-w-2xl text-sm text-muted-foreground">
+      <div className="mt-14 flex flex-col items-center gap-4 border-t border-border pt-10 text-center">
+        <p className="max-w-2xl text-sm leading-relaxed text-foreground/65">
           Resultatet er sendt til e-posten din. Hvis du la inn telefonnummer,
           kan vi ringe deg for å gå gjennom score-en og foreslå tiltak.
         </p>
@@ -175,10 +185,9 @@ export default function Result() {
             </Link>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Score-nivå:{" "}
-          <strong className="text-foreground">{tierLabel(tier)}</strong> (
-          {scan.score}/100)
+        <p className="font-mono text-[11px] uppercase tracking-wider text-foreground/45">
+          Nivå: <span className="text-foreground/65">{tierLabel(tier)}</span> ·{" "}
+          {scan.score}/100
         </p>
       </div>
     </section>
