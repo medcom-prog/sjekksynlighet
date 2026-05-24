@@ -20,7 +20,7 @@
     <meta property="og:description" content="Hvor synlig er nettsiden din for ChatGPT, Perplexity og Google AI Overviews? Få en gratis teknisk analyse på 30 sekunder." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://sjekksynlighet.no/" />
-    <meta property="og:image" content="https://sjekksynlighet.no/og-image.svg" />
+    <meta property="og:image" content="https://sjekksynlighet.no/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Sjekksynlighet" />
@@ -30,7 +30,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sjekksynlighet — Gratis AI-synlighetscheck" />
     <meta name="twitter:description" content="Hvor synlig er nettsiden din for ChatGPT, Perplexity og Google AI Overviews? Få en gratis analyse på 30 sekunder." />
-    <meta name="twitter:image" content="https://sjekksynlighet.no/og-image.svg" />
+    <meta name="twitter:image" content="https://sjekksynlighet.no/og-image.png" />
 
     <!-- Fonts: Inter (UI + body), DM Sans (display), JetBrains Mono (score number).
          Non-blocking with display=swap, preconnect for fast handshake. -->
@@ -69,7 +69,67 @@
           "logo": "https://sjekksynlighet.no/logo.png",
           "description": "Sjekksynlighet er et gratis, nøytralt verktøy som analyserer hvor synlig en nettside er for moderne AI-søkemotorer og klassisk Google-søk. Vi gir teknisk score og konkrete forbedringspunkter på 30 sekunder.",
           "inLanguage": "nb-NO",
-          "areaServed": { "@type": "Country", "name": "Norway" }
+          "areaServed": { "@type": "Country", "name": "Norway" },
+          "parentOrganization": { "@id": "https://www.medcom.no/#organization" },
+          "founder": { "@id": "https://sjekksynlighet.no/#operator-shad" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.medcom.no/#organization",
+          "name": "Medcom AS",
+          "url": "https://www.medcom.no",
+          "description": "Norsk webbyrå spesialisert på AEO (Answer Engine Optimization) og SEO. Operatør av sjekksynlighet.no.",
+          "sameAs": [
+            "https://www.brreg.no/enhet/936155731",
+            "https://www.proff.no/selskap/medcom-as/larvik/dataprogramvare-og-utvikling/IFHD2DV009O",
+            "https://www.1881.no/data-programvare-og-utvikling/data-programvare-og-utvikling-vestfold/data-programvare-og-utvikling-larvik/medcom-as_107684911S0/",
+            "https://www.linkedin.com/company/medcom-as"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Almeveien 13",
+            "postalCode": "3274",
+            "addressLocality": "Larvik",
+            "addressRegion": "Vestfold",
+            "addressCountry": "NO"
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://sjekksynlighet.no/#operator-shad",
+          "name": "Shad Mohu",
+          "jobTitle": "Markedsføringsleder hos Medcom · Operatør av Sjekksynlighet",
+          "description": "Shad bygger datadrevne markedsføringskampanjer hos Medcom og er en av operatørene bak sjekksynlighet.no. Kombinerer SEO, AEO og konverteringsoptimalisering.",
+          "knowsAbout": [
+            "Answer Engine Optimization",
+            "AEO",
+            "SEO",
+            "Schema.org JSON-LD",
+            "AI-synlighet",
+            "Google AI Overviews",
+            "ChatGPT-sitering",
+            "Perplexity",
+            "Konverteringsoptimalisering",
+            "Datadrevet markedsføring"
+          ],
+          "worksFor": { "@id": "https://www.medcom.no/#organization" },
+          "sameAs": ["https://www.linkedin.com/company/medcom-as"]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://sjekksynlighet.no/#operator-erik",
+          "name": "Erik Santos Da Silva",
+          "jobTitle": "Salgsleder hos Medcom · Operatør av Sjekksynlighet",
+          "description": "Erik leder salg og kundepartnerskap hos Medcom og er en av operatørene bak sjekksynlighet.no.",
+          "knowsAbout": [
+            "Partnerskap",
+            "Strategi",
+            "Prosjektledelse",
+            "Kundeoppfølging",
+            "AEO-konsultasjon"
+          ],
+          "worksFor": { "@id": "https://www.medcom.no/#organization" },
+          "sameAs": ["https://www.linkedin.com/company/medcom-as"]
         },
         {
           "@type": "WebApplication",
@@ -125,6 +185,104 @@
             "@type": "WebPageElement",
             "cssSelector": "main"
           }
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://sjekksynlighet.no/#checks-list",
+          "name": "Ti AEO-signaler vi sjekker",
+          "description": "De ti tekniske AEO-signalene som faktisk teller for synlighet i ChatGPT, Gemini, Perplexity og Google AI Overviews.",
+          "itemListOrder": "https://schema.org/ItemListOrderAscending",
+          "numberOfItems": 10,
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Nettsiden svarer (HTTP 200)",
+              "description": "En treg eller død nettside er som en butikk med stengt skilt. Vi banker på døra og verifiserer at den åpner under to sekunder."
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Skiltet over butikken er på plass (title, meta description, canonical)",
+              "description": "De tre taggene AI-modeller og Google ser først. Vi kontrollerer at alle eksisterer med fornuftig lengde."
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Du har et visittkort til AI-er (Schema.org JSON-LD)",
+              "description": "Strukturert data — det maskinlesbare visittkortet som lar ChatGPT hente fakta direkte fra siden din."
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Visittkortet er utfylt skikkelig (Organization + WebSite + LocalBusiness/Service/FAQPage)",
+              "description": "Et halvt utfylt visittkort betyr at ChatGPT vet navnet ditt, men ikke kan svare på hva du tilbyr."
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "AI-er står på gjestelista di (robots.txt for 11 AI-crawlere)",
+              "description": "Eksplisitt Allow for GPTBot, ClaudeBot, OAI-SearchBot, PerplexityBot, Google-Extended med flere."
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "name": "Du har et oppdatert kart over nettsiden (sitemap.xml)",
+              "description": "Uten kart må Google og ChatGPT lete. Et gammelt kart får dem til å tro nye sider ikke finnes."
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "name": "AI-er har en elevator-pitch av deg (llms.txt)",
+              "description": "5-sekunders-presentasjonen AI-modeller leser før de skal oppsummere bedriften din."
+            },
+            {
+              "@type": "ListItem",
+              "position": 8,
+              "name": "Du har én hovedinngang — ikke to (apex/www 301-redirect)",
+              "description": "To dører til samme butikk splitter Google-equity. Konkurrenten med én dør får full pott."
+            },
+            {
+              "@type": "ListItem",
+              "position": 9,
+              "name": "Du står oppført i offentlige registre (sameAs til Brønnøysund, Proff, 1881)",
+              "description": "AI-er bygger entity-graf for å verifisere at bedriften er reell. Norske bots har spesielt høy tillit til disse tre."
+            },
+            {
+              "@type": "ListItem",
+              "position": 10,
+              "name": "Den offisielle adressen din finnes (canonical resolver)",
+              "description": "Vi har sett ekte tilfeller der canonical pekte på en gammel adresse som aldri ble registrert — hele SEO-arbeidet lekker da til en død URL."
+            }
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://sjekksynlighet.no/#howto",
+          "name": "Slik sjekker du AI-synligheten til nettsiden din",
+          "description": "Fra domene til ferdig score på 30 sekunder — tre steg uten teknisk forkunnskap.",
+          "totalTime": "PT30S",
+          "estimatedCost": { "@type": "MonetaryAmount", "currency": "NOK", "value": "0" },
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Du skriver inn domenet",
+              "text": "Skriv nettsiden din, e-post, og eventuelt telefonnummer. Ingen registrering, ingen passord."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Vi kjører ti tekniske sjekker",
+              "text": "Schema, robots.txt for AI-crawlere, sitemap, canonical, llms.txt, www-redirect og mer — i parallell mot ditt live-domene."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Du får en score og topp-5 mangler",
+              "text": "Resultatet er klart med en gang, og en kopi sendes til e-posten din. Du ser konkret hva som mangler og hvorfor det betyr noe."
+            }
+          ]
         },
         {
           "@type": "FAQPage",
@@ -194,7 +352,26 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <!--
+      Static H1 + intro inni #root. React's createRoot.render() replacer
+      hele innholdet av #root på mount, så menneske-brukere ser SPA-en.
+      Men non-JS crawlere (GPTBot, ClaudeBot, CCBot, OAI-SearchBot) som
+      ikke kjører JavaScript ser DENNE versjonen — som har ekte H1 +
+      Quick Answer-tekst og passerer Google's Soft 404-filter.
+
+      Speakable cssSelector ["h1", "[data-quick-answer]"] matcher både
+      denne fallback-versjonen og React-versjonen, så AI voice-assistants
+      kan plukke opp samme innhold uavhengig av rendering-modus.
+    -->
+    <div id="root">
+      <h1>Hvor synlig er nettsiden din i ChatGPT og Google?</h1>
+      <p data-quick-answer>
+        <strong>Som EU-kontroll for nettsiden din.</strong> Vi prøver å lese siden slik ChatGPT og Google gjør det, og forteller deg i klartekst hva de ikke finner. Du får en score fra 0 til 100, en topp-5-liste over mangler og forklaring uten teknisk-prat — alt på 30 sekunder, helt gratis, uten registrering.
+      </p>
+      <noscript>
+        <p>Denne nettsiden krever JavaScript for full funksjonalitet. Skru på JavaScript og last siden på nytt for å kjøre en gratis synlighetscheck.</p>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

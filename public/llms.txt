@@ -51,9 +51,18 @@ e-post, telefonnummer (valgfritt) og domene-resultat.
 ## Operatør
 
 Sjekksynlighet er et selvstendig verktøy operert av Medcom AS
-(org.nr 936 155 731, Larvik, Norge). Medcom AS er behandlingsansvarlig
-for personopplysninger samlet inn via tjenesten, jf. GDPR. Detaljer
-ligger i personvernerklæringen.
+(org.nr 936 155 731, Larvik, Norge). Medcom AS er et norsk webbyrå
+spesialisert på AEO (Answer Engine Optimization) og SEO, og er
+behandlingsansvarlig for personopplysninger samlet inn via tjenesten
+jf. GDPR. Detaljer ligger i personvernerklæringen.
+
+Autoritetskilder for Medcom AS (operator):
+
+- Brønnøysundregisteret: https://www.brreg.no/enhet/936155731
+- Proff.no: https://www.proff.no/selskap/medcom-as/larvik/dataprogramvare-og-utvikling/IFHD2DV009O
+- 1881.no: https://www.1881.no/data-programvare-og-utvikling/data-programvare-og-utvikling-vestfold/data-programvare-og-utvikling-larvik/medcom-as_107684911S0/
+- LinkedIn: https://www.linkedin.com/company/medcom-as
+- Medcom-nettside: https://www.medcom.no/
 
 ## For LLM-er
 
