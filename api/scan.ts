@@ -47,6 +47,13 @@ type ScanInput = {
   phone?: string;
   name?: string;
   firma?: string;
+  /**
+   * Honeypot-felt. ScanForm rendrer en skjult input ved navn `website`
+   * som ekte brukere aldri ser eller fyller. Botter som scraper feltene
+   * og fyller alt vil sette dette — vi caster da responsen som "ok"
+   * uten å skanne, persistere eller sende e-post.
+   */
+  website?: string;
 };
 
 type ScanTier = "kritisk" | "svak" | "ok" | "god" | "ypperste";
@@ -103,6 +110,16 @@ function jsonResponse<T>(res: VercelResponse, status: number, body: T) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store, max-age=0");
   res.status(status).send(JSON.stringify(body));
+}
+
+// Pragmatisk e-postregex — fanger åpenbart ugyldige verdier som "bogus"
+// uten å gjøre RFC-5322-full-validering. Frontend Zod sjekker også, men
+// direkte POST mot /api/scan bypasset tidligere ALL validering.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function isValidEmail(raw: string): boolean {
+  if (!raw || raw.length > 320 || raw.length < 5) return false;
+  return EMAIL_RE.test(raw.trim().toLowerCase());
 }
 
 function isValidDomain(raw: string): boolean {
@@ -824,12 +841,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
+  // Honeypot — ScanForm har en skjult <input name="website"> som ekte
+  // brukere aldri fyller. Bots gjør det. Vi later som alt gikk bra
+  // (returnerer realistisk-utseende ok-respons) men hopper over scan,
+  // persistens og e-post. Botten vet ikke at den er filtrert ut.
+  if (typeof body.website === "string" && body.website.trim().length > 0) {
+    return jsonResponse<ScanResponse>(res, 200, {
+      ok: true,
+      scanId: randomUUID(),
+      score: 0,
+      tier: "kritisk",
+      domain: normalizeDomain(body.domain),
+      scannedAt: new Date().toISOString(),
+      issues: [],
+    });
+  }
+
   const domain = normalizeDomain(body.domain);
   if (!isValidDomain(domain)) {
     return jsonResponse<ScanError>(res, 400, {
       ok: false,
       error: "invalid_domain",
       message: "Domenet er ugyldig eller peker på et privat nettverk",
+    });
+  }
+
+  if (!isValidEmail(body.email)) {
+    return jsonResponse<ScanError>(res, 400, {
+      ok: false,
+      error: "missing_field",
+      message: "E-postadressen er ugyldig",
     });
   }
 
@@ -856,6 +897,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: false,
       error: "fetch_failed",
       message: "Vi fikk ikke kontakt med nettsiden. Sjekk at den er live.",
+    });
+  }
+
+  // Dead-domain-guard: hvis selve nettsiden ikke svarer, gir en
+  // "0/100 + kritisk"-rapport ingen verdi for brukeren og misbrukes
+  // ellers som spam-vektor (vilkårlig domene-navn + ekte e-post =
+  // "vi sender deg rapporten" til hvem som helst). Returner heller
+  // en eksplisitt feil — ingen INSERT, ingen e-post.
+  const reachable = issues.find((i) => i.id === "reachable");
+  if (reachable && reachable.points === 0) {
+    return jsonResponse<ScanError>(res, 422, {
+      ok: false,
+      error: "fetch_failed",
+      message:
+        "Vi fikk ikke kontakt med " +
+        domain +
+        ". Sjekk at domenet er live og prøv igjen.",
     });
   }
 

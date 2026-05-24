@@ -26,6 +26,9 @@ const FormSchema = z.object({
     ),
   name: z.string().trim().optional(),
   firma: z.string().trim().optional(),
+  // Honeypot — fylles bare av botter som blindt fyller alle felt.
+  // Server avviser silently hvis dette er non-empty.
+  website: z.string().max(0).optional(),
 });
 
 export type ScanFormValues = z.infer<typeof FormSchema>;
@@ -60,6 +63,7 @@ export function ScanForm({ autoFocus = false }: { autoFocus?: boolean }) {
       phone: String(fd.get("phone") ?? "") || undefined,
       name: String(fd.get("name") ?? "") || undefined,
       firma: String(fd.get("firma") ?? "") || undefined,
+      website: String(fd.get("website") ?? "") || undefined,
     };
 
     const parsed = FormSchema.safeParse(values);
@@ -93,6 +97,30 @@ export function ScanForm({ autoFocus = false }: { autoFocus?: boolean }) {
         Skjema for å starte en gratis synlighetscheck. Domene og e-post er
         obligatorisk. Telefonnummer er valgfritt.
       </p>
+
+      {/* Honeypot — usynlig for mennesker (aria-hidden + tabindex=-1 +
+          off-screen position). Botter som scraper input-feltene fyller
+          dette; serveren caster da requesten silently uten å scanne. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+        }}
+      >
+        <label htmlFor="hp-website">Nettside (ikke fyll ut)</label>
+        <input
+          id="hp-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </div>
 
       <Field
         id="domain"
