@@ -14,13 +14,15 @@
  * den, og scriptet legger til en home-FAQ-mirror der hvis det er
  * relevant (i denne MVP har vi allerede FAQ i hovedskallet).
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import matter from "gray-matter";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "dist");
+const ARTICLES_DIR = join(ROOT, "content", "articles");
 const SHELL_PATH = join(DIST, "index.html");
 const SITE = "https://sjekksynlighet.no";
 
@@ -31,7 +33,10 @@ if (!existsSync(SHELL_PATH)) {
 
 const SHELL = readFileSync(SHELL_PATH, "utf8");
 
-const ROUTES = [
+/**
+ * Statiske ruter — /personvern + /om + /artikler-index.
+ */
+const STATIC_ROUTES = [
   {
     path: "/personvern",
     title: "Personvern — Sjekksynlighet",
@@ -64,7 +69,161 @@ const ROUTES = [
       },
     ],
   },
+  {
+    path: "/om",
+    title: "Om Sjekksynlighet",
+    description:
+      "Sjekksynlighet er et gratis verktøy bygd av Medcom AS for å gjøre AI-synlighet målbart for norske bedrifter.",
+    h1: "Hvem står bak Sjekksynlighet?",
+    intro:
+      "Sjekksynlighet er bygd og driftet av Medcom AS, et norsk webbyrå med spesialisering på AEO (Answer Engine Optimization). Vi laget det fordi vi var lei av at norske bedrifter ikke hadde et gratis sted å sjekke sin AI-synlighet uten å betale en konsulent.",
+    schemaGraph: (url) => [
+      {
+        "@type": "AboutPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: "Om Sjekksynlighet",
+        description:
+          "Opphavshistorie for sjekksynlighet.no — bygd av Medcom AS, gratis verktøy for AI-synlighet.",
+        isPartOf: { "@id": `${SITE}/#website` },
+        about: { "@id": `${SITE}/#organization` },
+        inLanguage: "nb-NO",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Hjem", item: `${SITE}/` },
+          { "@type": "ListItem", position: 2, name: "Om", item: url },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/artikler",
+    title: "Artikler — AEO og AI-synlighet forklart",
+    description:
+      "Praktisk kunnskap om Answer Engine Optimization, schema.org, AI-crawlere og hvordan norske bedrifter blir sitert av ChatGPT, Gemini og Perplexity.",
+    h1: "Slik fungerer AI-synlighet",
+    intro:
+      "Vi sjekker ti tekniske AEO-signaler. Her forklarer vi hva de er, hvorfor de teller, og hvordan du fikser dem — uten teknisk-prat.",
+    schemaGraph: (url) => [
+      {
+        "@type": "CollectionPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: "Artikler — AEO og AI-synlighet forklart",
+        isPartOf: { "@id": `${SITE}/#website` },
+        inLanguage: "nb-NO",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Hjem", item: `${SITE}/` },
+          { "@type": "ListItem", position: 2, name: "Artikler", item: url },
+        ],
+      },
+    ],
+  },
 ];
+
+/**
+ * Les artikkel-md filer → byg ROUTES-array med per-route schema og
+ * H1+intro. Hver artikkel får BlogPosting + BreadcrumbList for
+ * non-JS-crawlere. (React-versjonen emitter ytterligere ItemList
+ * for ToC + relatedLink for cluster-siblings ved hydration.)
+ */
+function readArticles() {
+  let entries = [];
+  try {
+    entries = readdirSync(ARTICLES_DIR);
+  } catch {
+    return [];
+  }
+  const articles = [];
+  for (const name of entries) {
+    if (!name.endsWith(".md")) continue;
+    const raw = readFileSync(join(ARTICLES_DIR, name), "utf8");
+    try {
+      const { data, content } = matter(raw);
+      if (!data.slug || !data.title) continue;
+      // Plukk ut første paragraf (etter > blockquote) som intro
+      const firstParagraph =
+        content
+          .split(/\n\n+/)
+          .map((p) => p.trim())
+          .find((p) => p && !p.startsWith(">") && !p.startsWith("#") && !p.startsWith(":::")) ?? "";
+      const intro = firstParagraph.replace(/\s+/g, " ").slice(0, 280);
+      articles.push({
+        slug: data.slug,
+        title: data.title,
+        meta_title: data.meta_title || data.title,
+        meta_description: data.meta_description || intro,
+        published_at: data.published_at,
+        updated_at: data.updated_at || data.published_at,
+        keyword: data.keyword,
+        hero_image: data.hero_image,
+        h1: data.title,
+        intro,
+      });
+    } catch {
+      // skip
+    }
+  }
+  return articles;
+}
+
+const articles = readArticles();
+
+const ARTICLE_ROUTES = articles.map((a) => ({
+  path: `/artikler/${a.slug}`,
+  title: a.meta_title,
+  description: a.meta_description,
+  h1: a.h1,
+  intro: a.intro,
+  schemaGraph: (url) => [
+    {
+      "@type": "BlogPosting",
+      "@id": `${url}#article`,
+      url,
+      headline: a.title,
+      description: a.meta_description,
+      ...(a.hero_image ? { image: a.hero_image } : {}),
+      datePublished: a.published_at,
+      dateModified: a.updated_at,
+      inLanguage: "nb-NO",
+      ...(a.keyword ? { keywords: a.keyword } : {}),
+      author: {
+        "@type": "Person",
+        name: "Shad Mohu",
+        jobTitle: "Markedsføringsleder hos Medcom AS",
+        url: "https://www.medcom.no/team#shad",
+        worksFor: {
+          "@type": "Organization",
+          "@id": "https://www.medcom.no/#organization",
+          name: "Medcom AS",
+          url: "https://www.medcom.no",
+        },
+      },
+      publisher: {
+        "@type": "Organization",
+        "@id": `${SITE}/#organization`,
+        name: "Sjekksynlighet",
+        logo: { "@type": "ImageObject", url: `${SITE}/og-image.png` },
+      },
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Hjem", item: `${SITE}/` },
+        { "@type": "ListItem", position: 2, name: "Artikler", item: `${SITE}/artikler` },
+        { "@type": "ListItem", position: 3, name: a.title, item: url },
+      ],
+    },
+  ],
+}));
+
+const ROUTES = [...STATIC_ROUTES, ...ARTICLE_ROUTES];
 
 function htmlEscape(s) {
   return String(s)

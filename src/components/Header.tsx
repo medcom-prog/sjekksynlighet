@@ -36,7 +36,7 @@ export function Header() {
         </Link>
         <nav aria-label="Hovedmeny" className="flex items-center gap-1 text-sm">
           <NavLink
-            to="/personvern"
+            to="/artikler"
             className={({ isActive }) =>
               cn(
                 "rounded-md px-3 py-2 transition-colors",
@@ -46,7 +46,20 @@ export function Header() {
               )
             }
           >
-            Personvern
+            Artikler
+          </NavLink>
+          <NavLink
+            to="/om"
+            className={({ isActive }) =>
+              cn(
+                "rounded-md px-3 py-2 transition-colors",
+                isActive
+                  ? "bg-accent/10 text-accent"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )
+            }
+          >
+            Om
           </NavLink>
         </nav>
       </div>

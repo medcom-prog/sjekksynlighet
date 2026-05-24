@@ -10,6 +10,9 @@ import Home from "@/pages/Home";
 const Scanner = lazy(() => import("@/pages/Scanner"));
 const Result = lazy(() => import("@/pages/Result"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
+const OmOss = lazy(() => import("@/pages/OmOss"));
+const ArticleIndex = lazy(() => import("@/articles/ArticleIndex"));
+const ArticlePost = lazy(() => import("@/articles/ArticlePost"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export default function App() {
@@ -39,6 +42,30 @@ export default function App() {
             element={
               <Suspense fallback={null}>
                 <Privacy />
+              </Suspense>
+            }
+          />
+          <Route
+            path="om"
+            element={
+              <Suspense fallback={null}>
+                <OmOss />
+              </Suspense>
+            }
+          />
+          <Route
+            path="artikler"
+            element={
+              <Suspense fallback={null}>
+                <ArticleIndex />
+              </Suspense>
+            }
+          />
+          <Route
+            path="artikler/:slug"
+            element={
+              <Suspense fallback={null}>
+                <ArticlePost />
               </Suspense>
             }
           />
