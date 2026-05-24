@@ -954,20 +954,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const supabase = createClient(supabaseUrl, supabaseKey, {
         auth: { persistSession: false, autoRefreshToken: false },
       });
-      const { error } = await supabase.from("synlighet_leads").insert({
-        id: scanId,
-        domain,
-        email: body!.email,
-        phone: body!.phone || null,
-        name: body!.name || null,
-        firma: body!.firma || null,
-        scan_score: score,
-        scan_result: response,
-        status: "new",
-        user_agent: ua,
-        ip_hash: ipHash,
+      // Upsert via SECURITY DEFINER-funksjon. Hvis det finnes en eksisterende
+      // lead med samme (email, domain) får den oppdatert score + ny scan_result
+      // + scan_count++. Hvis ikke opprettes ny rad. Status/notes/assigned_to
+      // preserveres alltid — Medcom-team-data blir aldri overskrevet av et
+      // re-scan fra brukeren.
+      const { data, error } = await supabase.rpc("upsert_synlighet_scan", {
+        p_id: scanId,
+        p_domain: domain,
+        p_email: body!.email.toLowerCase().trim(),
+        p_phone: body!.phone || null,
+        p_name: body!.name || null,
+        p_firma: body!.firma || null,
+        p_scan_score: score,
+        p_scan_result: response,
+        p_user_agent: ua || null,
+        p_ip_hash: ipHash || null,
       });
-      if (error) console.error("[scan] supabase insert error", error);
+      if (error) {
+        console.error("[scan] supabase upsert error", error);
+      } else if (data && typeof data === "string" && data !== scanId) {
+        // Eksisterende lead ble oppdatert — log id for sporbarhet
+        console.log(`[scan] upserted existing lead ${data} (originally requested ${scanId})`);
+      }
     } catch (err) {
       console.error("[scan] supabase threw", err);
     }
