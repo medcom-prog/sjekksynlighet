@@ -12,8 +12,9 @@
  *
  * Personvern: returnerer KUN aggregert data. Aldri individuelle
  * domener, e-poster eller kontakt-info. RLS-policyen på
- * synlighet_leads forhindrer det også, men anon-key brukt her
- * får uansett ikke SELECT — vi bruker service_role internt.
+ * synlighet_leads gir anon-key INSERT-only, så vi kaller en
+ * SECURITY DEFINER-funksjon (`get_synlighet_stats`) som
+ * aggregerer i Postgres og kun returnerer trygge tall.
  */
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createClient } from "@supabase/supabase-js";
@@ -80,31 +81,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
-    // Hent scan_score + scan_result for hver lead. Vi aggregerer
-    // alt i kode istedenfor SQL — total dataset er typisk lite (få
-    // tusen rader) og fleksibiliteten er verdt litt mer compute.
-    const { data, error } = await supabase
-      .from("synlighet_leads")
-      .select("scan_score, scan_result, created_at, last_scan_at");
+    // Anon-rollen har INSERT-only på synlighet_leads (RLS). En
+    // SECURITY DEFINER-funksjon i Postgres aggregerer trygt og
+    // returnerer kun anonyme tall vi har lov til å eksponere.
+    const { data, error } = await supabase.rpc("get_synlighet_stats");
 
     if (error) {
-      console.error("[stats] supabase select error", error);
+      console.error("[stats] rpc error", error);
       return jsonResponse<StatsError>(res, 502, {
         ok: false,
         error: "Database query failed",
       });
     }
 
-    const rows = (data ?? []) as Array<{
-      scan_score: number;
-      scan_result: { issues?: Array<{ id: string; points: number; maxPoints: number }> };
-      created_at: string;
-      last_scan_at?: string;
-    }>;
+    const raw = data as {
+      total_scans: number;
+      avg_score: number;
+      median_score: number;
+      score_distribution: {
+        kritisk: number;
+        svak: number;
+        ok: number;
+        god: number;
+        ypperste: number;
+      };
+      weakest_checks: Array<{ id: string; below_half_pct: number }>;
+      first_scan_at: string | null;
+      last_scan_at: string | null;
+    } | null;
 
-    const totalScans = rows.length;
-
-    if (totalScans === 0) {
+    if (!raw || raw.total_scans === 0) {
       return jsonResponse<StatsResponse>(
         res,
         200,
@@ -124,57 +130,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
     }
 
-    const scores = rows.map((r) => r.scan_score).sort((a, b) => a - b);
-    const sum = scores.reduce((s, x) => s + x, 0);
-    const avg = sum / scores.length;
-    const median =
-      scores.length % 2 === 0
-        ? (scores[scores.length / 2 - 1] + scores[scores.length / 2]) / 2
-        : scores[Math.floor(scores.length / 2)];
-
-    const dist = { kritisk: 0, svak: 0, ok: 0, god: 0, ypperste: 0 };
-    for (const s of scores) {
-      if (s >= 85) dist.ypperste++;
-      else if (s >= 71) dist.god++;
-      else if (s >= 51) dist.ok++;
-      else if (s >= 31) dist.svak++;
-      else dist.kritisk++;
-    }
-
-    // For hver sjekk-id: hvor stor andel av scans får < halv-maks?
-    const checkFailCounts: Record<string, { failed: number; total: number }> = {};
-    for (const r of rows) {
-      const issues = r.scan_result?.issues ?? [];
-      for (const i of issues) {
-        const k = i.id;
-        if (!checkFailCounts[k]) checkFailCounts[k] = { failed: 0, total: 0 };
-        checkFailCounts[k].total++;
-        if (i.points < i.maxPoints / 2) checkFailCounts[k].failed++;
-      }
-    }
-    const weakest = Object.entries(checkFailCounts)
-      .map(([id, { failed, total }]) => ({
-        id,
-        below_half_pct: Math.round((failed / total) * 100),
-      }))
-      .sort((a, b) => b.below_half_pct - a.below_half_pct)
-      .slice(0, 5);
-
-    const dates = rows
-      .map((r) => r.created_at)
-      .filter(Boolean)
-      .sort();
-
     const response: StatsResponse = {
       ok: true,
       generated_at: new Date().toISOString(),
-      total_scans: totalScans,
-      avg_score: Math.round(avg * 10) / 10,
-      median_score: Math.round(median * 10) / 10,
-      score_distribution: dist,
-      weakest_checks: weakest,
-      first_scan_at: dates[0] ?? null,
-      last_scan_at: dates[dates.length - 1] ?? null,
+      total_scans: raw.total_scans,
+      avg_score: Number(raw.avg_score),
+      median_score: Number(raw.median_score),
+      score_distribution: raw.score_distribution,
+      weakest_checks: raw.weakest_checks ?? [],
+      first_scan_at: raw.first_scan_at,
+      last_scan_at: raw.last_scan_at,
       note: "Aggregert anonymisert data fra synlighet_leads. Oppdateres hvert tiende minutt.",
     };
 
