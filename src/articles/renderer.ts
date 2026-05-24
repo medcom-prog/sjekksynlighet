@@ -94,12 +94,18 @@ const renderer: RendererObject = {
  * Konverterer til <details>-blokk som er kollapset by default.
  * Brukeren ser "Vis teknisk detalj for utvikler"-knappen og kan velge
  * å åpne. Innholdet inni rendres med fulle markdown-regler (nestet).
+ *
+ * NB: tokenizer MÅ bruke `this.lexer.blockTokens(...)` for å parse
+ * inner-content, IKKE `marked.lexer(...)`. Sistnevnte oppretter en ny
+ * Lexer-instans som korrupter den ytre parser-stateen — etter første
+ * teknisk-blokk vil alle påfølgende headings/paragrafer/lister få
+ * tomme `tokens`-arrays. Verifisert via browser-inspeksjon mai 2026.
  */
 type TechnicalToken = {
   type: "technicalBlock";
   raw: string;
   text: string;
-  tokens: ReturnType<typeof marked.lexer>;
+  tokens: Tokens.Generic[];
 };
 
 marked.use({
@@ -118,12 +124,13 @@ marked.use({
         const match = rule.exec(src);
         if (match) {
           const inner = match[1].trim();
-          const lexed = marked.lexer(inner);
+          const tokens: Tokens.Generic[] = [];
+          this.lexer.blockTokens(inner, tokens);
           const token: TechnicalToken = {
             type: "technicalBlock",
             raw: match[0],
             text: inner,
-            tokens: lexed,
+            tokens,
           };
           return token as unknown as ReturnType<NonNullable<import("marked").TokenizerExtension["tokenizer"]>>;
         }
