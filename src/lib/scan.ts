@@ -78,45 +78,60 @@ export function tierLabel(tier: ScanTier): string {
 /**
  * Én setning som forklarer hva nivået betyr i klartekst.
  * Brukes på resultat-siden for å gi mening til score-tallet.
+ *
+ * Stramt språk — vi vil ikke gjøre brukere komfortable med "OK"-score
+ * når de teknisk sett er bak. 71+ er "ok", 85+ er "I toppen".
  */
 export function tierHeadline(tier: ScanTier): string {
   switch (tier) {
     case "ypperste":
-      return "Toppskåren — AI-er finner deg lett";
+      return "I toppen — du er klar for AI-søk";
     case "god":
-      return "Bra grunnmur — to-tre fikser igjen";
+      return "Bra base, men gap — du er nær toppen";
     case "ok":
-      return "Halvveis dit — det er hull å tette";
+      return "Halvveis — du går glipp av siteringer hver dag";
     case "svak":
-      return "Svak — du er nok ofte usynlig for AI-er";
+      return "Bak konkurrentene — alvorlige hull";
     case "kritisk":
-      return "Akutt — start her";
+      return "Akutt — AI-motorer kan praktisk talt ikke lese deg";
   }
 }
 
 /**
  * Lengre, mer praktisk forklaring av hva tieren betyr for bedriften.
  * Brukes som "Kort fortalt"-blokk på resultat-siden.
+ *
+ * Hver av disse er rammet rundt KONSEKVENS for forretningen, ikke
+ * teknisk grunnmur. Vi sier hva brukeren MISTER ved status quo,
+ * ikke bare hva de mangler.
  */
 export function tierExplanation(tier: ScanTier): string {
   switch (tier) {
     case "ypperste":
       return "Du har gjort det meste riktig. ChatGPT, Google og andre AI-motorer kan lese, forstå og sitere nettsiden din. Vedlikehold det du har og tenk på neste nivå: faktisk innhold og autoritet.";
     case "god":
-      return "Det tekniske grunnlaget er solid. Du har et par konkrete forbedringer som vil løfte deg til toppen — se topp-mangler under, fiks dem, og du er der.";
+      return "Solid teknisk base, men du er ikke i mål. Konkurrenter med 85+ blir sitert oftere når kunder spør AI-er om bedrifter som din. Topp-mangler under viser de siste få punktene du må tette.";
     case "ok":
-      return "De grunnleggende bitene er på plass, men sentrale signaler mangler. Når kunder spør AI-er om bedrifter som din, blir du nok forbigått fordi konkurrenter har fylt ut «visittkortet» sitt mer komplett.";
+      return "De grunnleggende bitene er på plass, men du går glipp av betydelige siteringer hver dag. Når kunder spør ChatGPT, Gemini eller Perplexity om bedrifter som din, plukker AI-en heller konkurrenter som har fylt ut «visittkortet» sitt mer komplett.";
     case "svak":
-      return "Flere fundamentale ting mangler. AI-motorer kan finne deg, men forstår lite. Det er fortsatt enkle løft som kan flytte score-en raskt — fokuser på topp-3 først.";
+      return "Du er bak de fleste konkurrenter teknisk sett. AI-motorer kan finne deg, men forstår lite — så de siterer noen andre. Det er fortsatt raske grep som kan flytte score-en betydelig. Start med topp-3.";
     case "kritisk":
       return "AI-motorer kan praktisk talt ikke lese nettsiden din. Det er hovedgrunnen til at du aldri dukker opp i ChatGPT- eller Gemini-svar. De gode nyhetene: det er ofte raske, konkrete fikser som løfter deg betydelig.";
   }
 }
 
+/**
+ * Visuell tone for tier — bare 85+ er grønn. Alt under det er
+ * gult/oransje/rødt. Ærlig kalibrering: på en 100-poengs-rubric
+ * betyr 70 at du mangler 30 poeng av relevante AEO-signaler —
+ * det fortjener "trenger oppmerksomhet", ikke grønt lys.
+ *
+ * Presedens: Google PageSpeed Insights gir samme regel (50–89 oransje).
+ */
 export function tierTone(tier: ScanTier): "good" | "ok" | "warn" {
-  if (tier === "ypperste" || tier === "god") return "good";
-  if (tier === "ok") return "ok";
-  return "warn";
+  if (tier === "ypperste") return "good";        // 85+
+  if (tier === "god") return "ok";               // 71–84
+  return "warn";                                 // alt under 71
 }
 
 const SCAN_CACHE_PREFIX = "sjekk:scan:";
