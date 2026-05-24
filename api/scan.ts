@@ -878,13 +878,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // logget feil (Vercel functions har ingen background-jobs), men feiler
   // ikke responsen — brukeren skal se resultatet uansett.
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Anon-nøkkel — kun INSERT på synlighet_leads er tillatt via RLS-
+  // policy "anon insert leads". CHECK-en der avviser åpenbart
+  // misbruk (negative scores, tom email, etc.). Service_role er ikke
+  // nødvendig her og ville bypasse RLS unødvendig.
+  const supabaseKey =
+    process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   const resendKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.CONTACT_FROM_EMAIL || "Sjekksynlighet <onboarding@resend.dev>";
 
   const persistPromise = (async () => {
     if (!supabaseUrl || !supabaseKey) {
-      console.warn("[scan] SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY mangler — hopper over lagring");
+      console.warn("[scan] SUPABASE_URL/SUPABASE_ANON_KEY mangler — hopper over lagring");
       return;
     }
     try {
