@@ -1004,7 +1004,76 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   })();
 
-  await Promise.allSettled([persistPromise, emailPromise]);
+  // Intern notifikasjon til Medcom-teamet — så ingen leads blir
+  // liggende i timesvis fordi ingen logger inn for å sjekke DB.
+  // Default-mottaker er post@medcom.no; kan overstyres med
+  // LEAD_NOTIFICATION_EMAIL env-var (komma-separert for flere).
+  const notifyPromise = (async () => {
+    if (!resendKey) return;
+    const recipients = (process.env.LEAD_NOTIFICATION_EMAIL || "post@medcom.no")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (recipients.length === 0) return;
+    try {
+      const resend = new Resend(resendKey);
+      const top3 = [...issues]
+        .sort((a, b) => b.maxPoints - b.points - (a.maxPoints - a.points))
+        .slice(0, 3);
+      const phoneLine = body!.phone
+        ? `<strong>Telefon:</strong> <a href="tel:${escapeHtml(body!.phone.replace(/\s/g, ""))}">${escapeHtml(body!.phone)}</a> (ring!)`
+        : `<em>Ingen telefon oppgitt — kontakt via e-post</em>`;
+      const contactName = body!.name ? `${escapeHtml(body!.name)}` : "(ikke oppgitt)";
+      const firma = body!.firma ? ` · ${escapeHtml(body!.firma)}` : "";
+      const portalUrl = `https://portal.medcom.no/portal/admin/synlighet`;
+      const internalHtml = `<!doctype html>
+<html lang="nb">
+<body style="margin:0;background:#0d0d0d;font-family:'Inter',-apple-system,sans-serif;color:#e5e5e5;">
+  <div style="max-width:560px;margin:0 auto;padding:24px;">
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:24px;">
+      <div style="color:#0D9488;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">
+        Ny synlighet-lead
+      </div>
+      <h1 style="margin:0 0 4px 0;font-size:22px;font-weight:600;color:#fff;">
+        ${escapeHtml(domain)}
+      </h1>
+      <div style="font-size:13px;color:#a3a3a3;margin-bottom:18px;">
+        Score: <strong style="color:#fff;">${score}/100</strong> (${tierLabel(tier)})
+      </div>
+      <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;padding:14px;font-size:13px;line-height:1.7;margin-bottom:16px;">
+        <strong>Kontakt:</strong> ${contactName}${firma}<br/>
+        <strong>E-post:</strong> <a href="mailto:${escapeHtml(body!.email)}" style="color:#14B8A6;">${escapeHtml(body!.email)}</a><br/>
+        ${phoneLine}
+      </div>
+      <div style="font-size:12px;color:#a3a3a3;margin-bottom:8px;font-weight:600;">Topp 3 mangler:</div>
+      <ul style="margin:0 0 18px 0;padding-left:18px;font-size:13px;color:#d4d4d4;line-height:1.7;">
+        ${top3.map((i) => `<li><strong>${escapeHtml(i.title)}</strong> (${i.points}/${i.maxPoints})</li>`).join("")}
+      </ul>
+      <a href="${portalUrl}" style="display:inline-block;background:#0D9488;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">
+        Åpne i portalen →
+      </a>
+    </div>
+    <p style="margin:14px 0 0 0;font-size:11px;color:#737373;text-align:center;">
+      Auto-melding fra sjekksynlighet.no. Set LEAD_NOTIFICATION_EMAIL env-var for å endre mottaker.
+    </p>
+  </div>
+</body>
+</html>`;
+      const internalText = `Ny synlighet-lead\n\n${domain} — ${score}/100 (${tierLabel(tier)})\n\nKontakt: ${body!.name || "(ikke oppgitt)"}${body!.firma ? " · " + body!.firma : ""}\nE-post: ${body!.email}\n${body!.phone ? "Telefon: " + body!.phone + " (ring!)" : "Ingen telefon oppgitt"}\n\nTopp 3 mangler:\n${top3.map((i) => `• ${i.title} (${i.points}/${i.maxPoints})`).join("\n")}\n\nÅpne i portalen: ${portalUrl}`;
+      const { error } = await resend.emails.send({
+        from: fromEmail,
+        to: recipients,
+        subject: `Ny lead: ${domain} (${score}/100${body!.phone ? " · har telefon" : ""})`,
+        html: internalHtml,
+        text: internalText,
+      });
+      if (error) console.error("[scan] notification resend error", error);
+    } catch (err) {
+      console.error("[scan] notification threw", err);
+    }
+  })();
+
+  await Promise.allSettled([persistPromise, emailPromise, notifyPromise]);
 
   return jsonResponse<ScanResponse>(res, 200, response);
 }
