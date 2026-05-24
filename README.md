@@ -36,10 +36,10 @@ flyten ende-til-ende.
 | Variabel | Hvor brukes | Hva |
 |---|---|---|
 | `SUPABASE_URL` | `api/scan.ts` | `https://bhwzzzzqxhejuqfpzejd.supabase.co` |
-| `SUPABASE_SERVICE_ROLE_KEY` | `api/scan.ts` | Hent fra Supabase Dashboard → Settings → API |
+| `SUPABASE_ANON_KEY` | `api/scan.ts` | Anon-nøkkel (ikke service_role). INSERT håndheves via RLS-policy `anon insert leads` |
 | `RESEND_API_KEY` | `api/scan.ts` | Egen Resend-konto for sjekksynlighet.no |
 | `CONTACT_FROM_EMAIL` | `api/scan.ts` | `"Sjekksynlighet <noreply@sjekksynlighet.no>"` |
-| `IP_HASH_SALT` | `api/scan.ts` | (valgfri) salt for IP-hashing |
+| `IP_HASH_SALT` | `api/scan.ts` | Tilfeldig streng for IP-hashing. Bør ikke endres etter produksjon |
 
 > **OBS — Resend domeneverifisering:** Hvis sjekksynlighet.no ikke er
 > verifisert i Resend ved første deploy, sett `CONTACT_FROM_EMAIL` til
