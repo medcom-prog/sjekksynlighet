@@ -19,7 +19,15 @@ export function Footer() {
               Operatør
             </p>
             <p className="text-foreground/70">
-              Medcom AS · org.nr 936 155 731
+              <a
+                href="https://www.medcom.no"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent font-medium underline-offset-4 hover:underline"
+              >
+                Medcom AS
+              </a>{" "}
+              · org.nr 936 155 731
               <br />
               <span className="text-foreground/55">
                 Behandlingsansvarlig etter GDPR — se{" "}
@@ -29,6 +37,13 @@ export function Footer() {
                 >
                   personvernerklæringen
                 </Link>
+                {" "}eller{" "}
+                <Link
+                  to="/om"
+                  className="text-accent underline-offset-4 hover:underline"
+                >
+                  les mer om oss
+                </Link>
                 .
               </span>
             </p>
@@ -37,6 +52,18 @@ export function Footer() {
         <div className="mt-10 flex flex-col gap-3 border-t border-border/60 pt-6 text-xs text-foreground/55 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Sjekksynlighet · Alle rettigheter forbeholdt</p>
           <nav aria-label="Footer-meny" className="flex items-center gap-5">
+            <Link
+              to="/artikler"
+              className="transition-colors hover:text-foreground"
+            >
+              Artikler
+            </Link>
+            <Link
+              to="/om"
+              className="transition-colors hover:text-foreground"
+            >
+              Om
+            </Link>
             <Link
               to="/personvern"
               className="transition-colors hover:text-foreground"
