@@ -4,7 +4,14 @@ import { ArrowLeft, Calendar, Globe, RotateCcw } from "lucide-react";
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { IssueCard } from "@/components/IssueCard";
 import { Button } from "@/components/ui/button";
-import { loadCachedScan, tierFromScore, tierLabel, type ScanResponse } from "@/lib/scan";
+import {
+  loadCachedScan,
+  tierExplanation,
+  tierFromScore,
+  tierHeadline,
+  tierLabel,
+  type ScanResponse,
+} from "@/lib/scan";
 
 export default function Result() {
   const [params] = useSearchParams();
@@ -104,20 +111,16 @@ export default function Result() {
         />
         <div className="relative flex flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(13,148,136,0.2)] sm:p-10">
           <ScoreGauge score={scan.score} />
+          {/* Human-language tier-headline rett under gauge — gir
+              tallet mening på under to sekunder for ikke-tekniske brukere. */}
+          <p className="text-center font-display text-xl font-semibold text-foreground sm:text-2xl">
+            {tierHeadline(tier)}
+          </p>
           <p
             data-quick-answer
             className="quick-answer max-w-xl text-center"
           >
-            <strong>Kort fortalt:</strong>{" "}
-            {tier === "ypperste"
-              ? "Sterk teknisk grunnmur. Vi finner få eller ingen mangler — sannsynligvis godt posisjonert for AI-siteringer."
-              : tier === "god"
-              ? "Solid baseline. Et par konkrete tiltak vil løfte synligheten til ypperste klasse."
-              : tier === "ok"
-              ? "Tekniske bein er på plass, men sentrale entity- og innholdssignaler mangler. Topp-5 under viser hvor."
-              : tier === "svak"
-              ? "Mange grunnleggende AEO-signaler mangler. Det er fortsatt enkle løft som kan flytte score raskt."
-              : "Stort potensial — flere kritiske signaler mangler. Start med topp-3 i lista under for raskest løft."}
+            <strong>Kort fortalt:</strong> {tierExplanation(tier)}
           </p>
         </div>
       </div>
@@ -130,8 +133,12 @@ export default function Result() {
               Topp {topIssues.length} mangler
             </p>
             <h2 className="mt-1.5 font-display text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
-              Det viktigste å fikse først
+              Slik flytter du score-en raskest
             </h2>
+            <p className="mt-2 max-w-2xl text-sm text-foreground/65">
+              Klikk et kort for å se hvorfor det betyr noe, hvor lang tid det
+              tar å fikse, og hvem som typisk gjør jobben.
+            </p>
           </div>
           <Globe className="hidden h-5 w-5 text-foreground/30 sm:block" aria-hidden />
         </div>

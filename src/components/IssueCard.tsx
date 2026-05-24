@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { AlertTriangle, ChevronDown, Info, Wrench, CheckCircle2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronDown,
+  Clock,
+  Code2,
+  Info,
+  TrendingUp,
+  Wrench,
+  CheckCircle2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CHECK_DEFINITIONS } from "@/lib/checks";
 import type { ScanIssue } from "@/lib/scan";
@@ -43,16 +52,17 @@ const SEVERITY_STYLE = {
 
 export function IssueCard({ issue, defaultOpen = false }: Props) {
   const [open, setOpen] = useState(defaultOpen);
+  const [showTech, setShowTech] = useState(false);
   const def = CHECK_DEFINITIONS.find((c) => c.id === issue.id);
   const meta = SEVERITY_STYLE[issue.severity];
   const Icon = meta.Icon;
   const pct = Math.max(0, Math.min(100, (issue.points / issue.maxPoints) * 100));
+  const pointsToGain = issue.maxPoints - issue.points;
 
   return (
     <article
       className={cn(
         "group relative overflow-hidden rounded-2xl border border-border bg-card transition-all",
-        // Left severity stripe via ::before — beholder rounded corners
         "before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1",
         meta.stripe,
         open ? "shadow-[0_8px_24px_-12px_rgba(15,20,25,0.18)]" : "hover:shadow-sm",
@@ -88,10 +98,10 @@ export function IssueCard({ issue, defaultOpen = false }: Props) {
             </span>
           </div>
           <h3 className="mt-1.5 font-display text-base font-semibold leading-snug text-foreground">
-            {issue.title}
+            {def?.title ?? issue.title}
           </h3>
           <p className="mt-1 text-sm leading-relaxed text-foreground/65 line-clamp-2">
-            {issue.summary}
+            {def?.plain.what ?? issue.summary}
           </p>
           {/* Thin score bar — visualizes points/max at a glance */}
           <div
@@ -116,29 +126,117 @@ export function IssueCard({ issue, defaultOpen = false }: Props) {
         />
       </button>
 
-      {open && (
-        <div className="grid gap-3 border-t border-border/60 px-5 py-5 pl-6 sm:grid-cols-2 sm:gap-4">
-          <DetailBlock
-            heading="Hvorfor det betyr noe"
-            body={def?.why ?? issue.summary}
-            icon={<Info className="h-4 w-4 text-accent" aria-hidden />}
-          />
-          <DetailBlock
-            heading="Slik fikser man det"
-            body={def?.howToFix ?? "Se vår tekniske dokumentasjon for den anbefalte løsningen."}
-            icon={<Wrench className="h-4 w-4 text-accent" aria-hidden />}
-          />
-          {issue.detail && (
-            <div className="sm:col-span-2 rounded-xl border border-dashed border-border bg-background/60 p-4 text-xs leading-relaxed text-foreground/70">
-              <span className="mb-1 block font-semibold uppercase tracking-wider text-foreground/55">
-                Detaljer fra sjekken
-              </span>
-              <span className="font-mono break-words">{issue.detail}</span>
+      {open && def && (
+        <div className="border-t border-border/60 bg-background/30 px-5 pl-6 pt-5 pb-5">
+          {/* Effort-badges — sier hvor lang tid + hvem som må fikse + potensielt løft */}
+          <div className="mb-4 flex flex-wrap gap-2">
+            <EffortBadge icon={<Clock className="h-3.5 w-3.5" />} label={def.effort.timeToFix} />
+            <EffortBadge icon={<Wrench className="h-3.5 w-3.5" />} label={def.effort.difficulty} />
+            {pointsToGain > 0 && (
+              <EffortBadge
+                icon={<TrendingUp className="h-3.5 w-3.5" />}
+                label={`+${pointsToGain} poeng å hente`}
+                tone="accent"
+              />
+            )}
+          </div>
+
+          {/* Konkret funn for DETTE domenet — ikke generelt */}
+          {issue.summary && (
+            <div className="mb-4 rounded-xl border border-border/60 bg-card p-4">
+              <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/55">
+                <Info className="h-3.5 w-3.5 text-accent" aria-hidden />
+                Vi fant
+              </div>
+              <p className="text-sm leading-relaxed text-foreground/85">
+                {issue.summary}
+              </p>
             </div>
           )}
+
+          {/* Plain forklaring — alltid synlig */}
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            <DetailBlock
+              heading="Hvorfor det betyr noe"
+              body={def.plain.why}
+              icon={<Info className="h-4 w-4 text-accent" aria-hidden />}
+            />
+            <DetailBlock
+              heading="Slik fikser man det"
+              body={def.plain.howToFix}
+              icon={<Wrench className="h-4 w-4 text-accent" aria-hidden />}
+            />
+          </div>
+
+          {/* Teknisk versjon — kun for utvikleren din */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowTech((v) => !v)}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/55 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md px-2 py-1 -ml-2"
+            >
+              <Code2 className="h-3.5 w-3.5" aria-hidden />
+              {showTech ? "Skjul teknisk versjon" : "Vis teknisk versjon for utvikler"}
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 transition-transform",
+                  showTech && "rotate-180",
+                )}
+                aria-hidden
+              />
+            </button>
+            {showTech && (
+              <div className="mt-3 grid gap-3 rounded-xl border border-dashed border-border bg-background/70 p-4 sm:grid-cols-2 sm:gap-4">
+                <DetailBlock
+                  heading="Teknisk: hva vi sjekker"
+                  body={def.technical.what}
+                  icon={<Code2 className="h-4 w-4 text-foreground/55" aria-hidden />}
+                  tone="mono"
+                />
+                <DetailBlock
+                  heading="Teknisk: hva som må gjøres"
+                  body={def.technical.howToFix}
+                  icon={<Wrench className="h-4 w-4 text-foreground/55" aria-hidden />}
+                  tone="mono"
+                />
+                {issue.detail && (
+                  <div className="sm:col-span-2 rounded-lg border border-dashed border-border bg-background/60 p-3 text-xs leading-relaxed text-foreground/70">
+                    <span className="mb-1 block font-semibold uppercase tracking-wider text-foreground/55">
+                      Råverdier fra sjekken
+                    </span>
+                    <span className="font-mono break-words">{issue.detail}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </article>
+  );
+}
+
+function EffortBadge({
+  icon,
+  label,
+  tone = "muted",
+}: {
+  icon: React.ReactNode;
+  label: string;
+  tone?: "muted" | "accent";
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+        tone === "accent"
+          ? "bg-accent/10 text-accent ring-1 ring-inset ring-accent/20"
+          : "bg-foreground/[0.04] text-foreground/65 ring-1 ring-inset ring-border/60",
+      )}
+    >
+      {icon}
+      {label}
+    </span>
   );
 }
 
@@ -146,18 +244,28 @@ function DetailBlock({
   heading,
   body,
   icon,
+  tone,
 }: {
   heading: string;
   body: string;
   icon: React.ReactNode;
+  tone?: "mono";
 }) {
   return (
-    <div className="rounded-xl bg-background/60 p-4 ring-1 ring-inset ring-border/50">
+    <div className="rounded-xl bg-card p-4 ring-1 ring-inset ring-border/50">
       <div className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/65">
         {icon}
         {heading}
       </div>
-      <p className="text-sm leading-relaxed text-foreground/80">{body}</p>
+      <p
+        className={cn(
+          "text-sm leading-relaxed text-foreground/80",
+          tone === "mono" && "font-mono text-[13px]",
+        )}
+      >
+        {body}
+      </p>
     </div>
   );
 }
+
