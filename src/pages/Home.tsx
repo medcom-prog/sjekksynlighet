@@ -151,18 +151,17 @@ export default function Home() {
               data-quick-answer
               className="quick-answer"
             >
-              <strong>Kort fortalt:</strong> Vi henter forsiden din og kjører
-              ti tekniske kontroller for å se hvor godt AI-motorer som
-              ChatGPT, Perplexity og Google AI Overviews kan lese den.{" "}
-              Du får en score fra 0 til 100, en kopi på e-post og en konkret
-              liste over hva som mangler.
+              <strong>Som EU-kontroll for nettsiden din.</strong> Vi prøver
+              å lese siden slik ChatGPT og Google gjør det, og forteller deg
+              i klartekst hva de ikke finner. Du får en score, en topp-5-
+              liste og forklaring uten teknisk-prat — alt på 30 sekunder.
             </p>
 
             <ul className="grid gap-2.5 text-[15px] text-foreground/75">
               {[
-                "Ti tekniske sjekker mot live-domene",
-                "Score 0–100 med fem nivåer",
-                "Topp-5 mangler med konkrete forslag",
+                "Ti sjekker mot din live-nettside",
+                "Score 0–100 i klartekst",
+                "Topp-5 mangler med praktisk fiks-guide",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5">
                   <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-good/15">
@@ -235,8 +234,8 @@ export default function Home() {
       <section id="hva-vi-sjekker" className="container mx-auto max-w-6xl py-16 sm:py-24">
         <SectionHeader
           eyebrow="Hva vi sjekker"
-          title="De ti tekniske AEO-signalene som faktisk teller"
-          sub="Hver sjekk er hentet fra ekte revisjoner av norske nettsider og oppdaterte AI-crawler-spesifikasjoner."
+          title="Ti AEO-signaler — forklart i klartekst"
+          sub="Hver sjekk her er noe AI-motorer som ChatGPT og Gemini bryr seg om. Ikke noe teknisk-prat — bare hva det betyr for at kunder skal finne deg."
         />
         <ol className="mt-12 grid gap-4 sm:grid-cols-2">
           {CHECK_DEFINITIONS.map((c, i) => (
@@ -255,7 +254,7 @@ export default function Home() {
                   {c.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-foreground/65">
-                  {c.what}
+                  {c.plain.what}
                 </p>
               </div>
             </li>

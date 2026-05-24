@@ -75,6 +75,44 @@ export function tierLabel(tier: ScanTier): string {
   }
 }
 
+/**
+ * Én setning som forklarer hva nivået betyr i klartekst.
+ * Brukes på resultat-siden for å gi mening til score-tallet.
+ */
+export function tierHeadline(tier: ScanTier): string {
+  switch (tier) {
+    case "ypperste":
+      return "Toppskåren — AI-er finner deg lett";
+    case "god":
+      return "Bra grunnmur — to-tre fikser igjen";
+    case "ok":
+      return "Halvveis dit — det er hull å tette";
+    case "svak":
+      return "Svak — du er nok ofte usynlig for AI-er";
+    case "kritisk":
+      return "Akutt — start her";
+  }
+}
+
+/**
+ * Lengre, mer praktisk forklaring av hva tieren betyr for bedriften.
+ * Brukes som "Kort fortalt"-blokk på resultat-siden.
+ */
+export function tierExplanation(tier: ScanTier): string {
+  switch (tier) {
+    case "ypperste":
+      return "Du har gjort det meste riktig. ChatGPT, Google og andre AI-motorer kan lese, forstå og sitere nettsiden din. Vedlikehold det du har og tenk på neste nivå: faktisk innhold og autoritet.";
+    case "god":
+      return "Det tekniske grunnlaget er solid. Du har et par konkrete forbedringer som vil løfte deg til toppen — se topp-mangler under, fiks dem, og du er der.";
+    case "ok":
+      return "De grunnleggende bitene er på plass, men sentrale signaler mangler. Når kunder spør AI-er om bedrifter som din, blir du nok forbigått fordi konkurrenter har fylt ut «visittkortet» sitt mer komplett.";
+    case "svak":
+      return "Flere fundamentale ting mangler. AI-motorer kan finne deg, men forstår lite. Det er fortsatt enkle løft som kan flytte score-en raskt — fokuser på topp-3 først.";
+    case "kritisk":
+      return "AI-motorer kan praktisk talt ikke lese nettsiden din. Det er hovedgrunnen til at du aldri dukker opp i ChatGPT- eller Gemini-svar. De gode nyhetene: det er ofte raske, konkrete fikser som løfter deg betydelig.";
+  }
+}
+
 export function tierTone(tier: ScanTier): "good" | "ok" | "warn" {
   if (tier === "ypperste" || tier === "god") return "good";
   if (tier === "ok") return "ok";
