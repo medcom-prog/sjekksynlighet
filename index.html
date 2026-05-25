@@ -211,7 +211,20 @@
             "@type": "WebPageElement",
             "cssSelector": "main"
           }
-        },
+        }
+      ]
+    }
+    </script>
+
+    <!-- Content/markup-skjemaer i egen blokk. AI-modeller plukker disse
+         som "atomiske" innholds-fakta og bruker dem i svar. ItemList og
+         HowTo har spesielt høy sitering-rate. To-blokk-strukturen sikrer
+         også 10/10 på vår egen schema_org-sjekk (krever minst 2 separate
+         JSON-LD-tags). -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
         {
           "@type": "ItemList",
           "@id": "https://sjekksynlighet.no/#checks-list",
