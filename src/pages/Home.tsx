@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/accordion";
 import { CHECK_DEFINITIONS, type CheckId } from "@/lib/checks";
 import { FadeUp } from "@/components/FadeUp";
+import { articles } from "@/articles/articles";
+import { TOPIC_CLUSTERS } from "@/articles/topics";
 
 /**
  * Semantisk ikon per sjekk. Velger ikoner som visualiserer hva sjekken
@@ -387,6 +389,64 @@ export default function Home() {
             );
           })}
         </ol>
+      </section>
+
+      {/* KUNNSKAPS-PREVIEW — 4 pillars som teasere som leder til full hub.
+          Bevisst plassert ETTER "Hva vi sjekker" (teknisk hva) og FØR
+          FAQ (om-produktet-spørsmål). Brukeren har sett verdien, vil
+          vite mer dypt, og artiklene fyller det. */}
+      <section className="container mx-auto max-w-6xl py-16 sm:py-24">
+        <SectionHeader
+          eyebrow="Gå dypere"
+          title="Praktiske guider om AI-synlighet"
+          sub="Ti tekniske sjekker er bare starten. Her forklarer vi hvorfor de teller, hva de mangler hos norske bedrifter, og hvordan du fikser dem — uten teknisk-prat."
+        />
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+          {TOPIC_CLUSTERS.map((cluster, i) => {
+            const pillar = articles.find((a) => a.slug === cluster.pillarSlug);
+            if (!pillar) return null;
+            return (
+              <FadeUp
+                key={cluster.slug}
+                delay={(i % 2) * 80 + Math.floor(i / 2) * 60}
+              >
+                <Link
+                  to={`/artikler/${pillar.slug}`}
+                  className="group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_16px_36px_-18px_rgba(13,148,136,0.28)] sm:p-7"
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+                    <span aria-hidden className="mr-2 inline-block h-px w-5 align-middle bg-accent/40" />
+                    {cluster.name}
+                  </p>
+                  <h3 className="mt-3 font-display text-xl font-semibold leading-tight tracking-tight text-foreground sm:text-2xl">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-foreground/65 line-clamp-3">
+                    {pillar.meta_description ?? pillar.excerpt}
+                  </p>
+                  <div className="mt-5 flex items-center justify-between border-t border-border/50 pt-4">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/45">
+                      Pillar · {Math.max(1, Math.round(pillar.content.split(/\s+/).filter(Boolean).length / 220))} min lesetid
+                    </span>
+                    <ArrowRight
+                      aria-hidden
+                      className="h-4 w-4 text-foreground/40 transition-all duration-200 group-hover:translate-x-1 group-hover:text-accent"
+                    />
+                  </div>
+                </Link>
+              </FadeUp>
+            );
+          })}
+        </div>
+        <FadeUp className="mt-10 text-center">
+          <Link
+            to="/artikler"
+            className="group inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-medium text-foreground/85 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-accent hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.2)]"
+          >
+            Se alle {articles.length} artikler
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
+          </Link>
+        </FadeUp>
       </section>
 
       {/* FAQ */}
