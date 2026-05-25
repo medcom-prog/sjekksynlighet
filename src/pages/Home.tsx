@@ -15,6 +15,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { CHECK_DEFINITIONS } from "@/lib/checks";
+import { FadeUp } from "@/components/FadeUp";
 
 const FAQS: Array<{ q: string; a: React.ReactNode }> = [
   {
@@ -130,12 +131,12 @@ export default function Home() {
 
         <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
           <div className="flex flex-col gap-6">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/25 bg-white/70 px-3 py-1 text-xs font-semibold text-accent shadow-sm backdrop-blur">
+            <FadeUp immediate delay={0} as="span" className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/25 bg-white/70 px-3 py-1 text-xs font-semibold text-accent shadow-sm backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" aria-hidden />
               Gratis · 30 sekunder · Ingen registrering
-            </span>
+            </FadeUp>
 
-            <h1 className="text-balance font-display text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.02em] sm:text-5xl lg:text-[3.5rem]">
+            <FadeUp immediate delay={80} as="h1" className="text-balance font-display text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.02em] sm:text-5xl lg:text-[3.5rem]">
               Hvor synlig er nettsiden din i{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 text-accent">ChatGPT</span>
@@ -145,19 +146,21 @@ export default function Home() {
                 />
               </span>{" "}
               og Google?
-            </h1>
+            </FadeUp>
 
-            <p
-              data-quick-answer
-              className="quick-answer"
-            >
-              <strong>Som EU-kontroll for nettsiden din.</strong> Vi prøver
-              å lese siden slik ChatGPT og Google gjør det, og forteller deg
-              i klartekst hva de ikke finner. Du får en score, en topp-5-
-              liste og forklaring uten teknisk-prat — alt på 30 sekunder.
-            </p>
+            <FadeUp immediate delay={160}>
+              <p
+                data-quick-answer
+                className="quick-answer"
+              >
+                <strong>Som EU-kontroll for nettsiden din.</strong> Vi prøver
+                å lese siden slik ChatGPT og Google gjør det, og forteller deg
+                i klartekst hva de ikke finner. Du får en score, en topp-5-
+                liste og forklaring uten teknisk-prat — alt på 30 sekunder.
+              </p>
+            </FadeUp>
 
-            <ul className="grid gap-2.5 text-[15px] text-foreground/75">
+            <FadeUp immediate delay={240} as="ul" className="grid gap-2.5 text-[15px] text-foreground/75">
               {[
                 "Ti sjekker mot din live-nettside",
                 "Score 0–100 i klartekst",
@@ -170,11 +173,11 @@ export default function Home() {
                   <span>{item}</span>
                 </li>
               ))}
-            </ul>
+            </FadeUp>
           </div>
 
           {/* FORM CARD — tighter, slightly tilted-feeling shadow */}
-          <div className="relative">
+          <FadeUp immediate delay={320} className="relative">
             <div
               aria-hidden
               className="absolute -inset-2 rounded-[28px] bg-gradient-to-br from-accent/20 via-transparent to-accent-soft/20 blur-2xl"
@@ -190,7 +193,7 @@ export default function Home() {
               </div>
               <ScanForm autoFocus />
             </div>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
@@ -205,9 +208,11 @@ export default function Home() {
           />
           <ol className="mt-12 grid gap-5 sm:grid-cols-3">
             {STEPS.map((s, i) => (
-              <li
+              <FadeUp
                 key={s.title}
-                className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.25)]"
+                as="li"
+                delay={i * 100}
+                className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.25)]"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
@@ -223,7 +228,7 @@ export default function Home() {
                 <p className="text-sm leading-relaxed text-foreground/65">
                   {s.body}
                 </p>
-              </li>
+              </FadeUp>
             ))}
           </ol>
         </div>
@@ -239,9 +244,11 @@ export default function Home() {
         />
         <ol className="mt-12 grid gap-4 sm:grid-cols-2">
           {CHECK_DEFINITIONS.map((c, i) => (
-            <li
+            <FadeUp
               key={c.id}
-              className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.2)] sm:p-6"
+              as="li"
+              delay={(i % 2) * 60 + Math.floor(i / 2) * 40}
+              className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.2)] sm:p-6"
             >
               <span
                 aria-hidden
@@ -257,7 +264,7 @@ export default function Home() {
                   {c.plain.what}
                 </p>
               </div>
-            </li>
+            </FadeUp>
           ))}
         </ol>
       </section>
@@ -287,7 +294,7 @@ export default function Home() {
       </section>
 
       {/* CLOSER */}
-      <section className="container mx-auto max-w-3xl py-20 text-center sm:py-28">
+      <FadeUp as="section" className="container mx-auto max-w-3xl py-20 text-center sm:py-28">
         <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-inset ring-accent/20">
           <ShieldCheck className="h-7 w-7 text-accent" aria-hidden />
         </div>
@@ -299,12 +306,12 @@ export default function Home() {
         </p>
         <a
           href="#main"
-          className="mt-7 inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_-12px_hsl(var(--accent)/0.65)] transition-colors hover:bg-accent-soft"
+          className="mt-7 inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_-12px_hsl(var(--accent)/0.65)] transition-[colors,transform,box-shadow] duration-200 hover:bg-accent-soft hover:scale-[1.03] hover:shadow-[0_2px_4px_rgba(0,0,0,0.06),0_16px_32px_-12px_hsl(var(--accent)/0.55)] active:scale-[0.98]"
         >
           Start sjekken
-          <ArrowRight className="h-4 w-4" aria-hidden />
+          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
         </a>
-      </section>
+      </FadeUp>
     </>
   );
 }

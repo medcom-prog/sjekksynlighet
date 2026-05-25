@@ -13,6 +13,7 @@ import { RelatedArticles } from "./RelatedArticles";
 import { TopicCluster } from "./TopicCluster";
 import { AuthorBio } from "./AuthorBio";
 import { getClusterForSlug, getClusterSiblings } from "./topics";
+import { FadeUp } from "@/components/FadeUp";
 
 const SITE_URL = typeof window !== "undefined" ? window.location.origin : "https://sjekksynlighet.no";
 
@@ -150,7 +151,7 @@ export default function ArticlePost() {
             </Link>
           </nav>
 
-          <header className="mb-8 space-y-3">
+          <FadeUp immediate as="header" className="mb-8 space-y-3">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs uppercase tracking-wider text-foreground/55">
               <span className="normal-case tracking-normal">
                 Av{" "}
@@ -189,7 +190,7 @@ export default function ArticlePost() {
                 })}
               </p>
             )}
-          </header>
+          </FadeUp>
 
           {article.hero_image && (
             <img
@@ -203,20 +204,23 @@ export default function ArticlePost() {
           <div className="max-w-none" dangerouslySetInnerHTML={{ __html: html }} />
 
           {/* Sluttet-CTA — ren, eneste CTA på hele artikkelen */}
-          <div className="mt-12 rounded-2xl border border-accent/20 bg-accent/[0.04] p-6 text-center sm:p-8">
+          <FadeUp className="mt-12 rounded-2xl border border-accent/20 bg-accent/[0.04] p-6 text-center sm:p-8">
             <p className="font-display text-lg font-semibold text-foreground">
               Klar til å sjekke din egen synlighet?
             </p>
             <p className="mt-1 text-sm text-foreground/65">
               30 sekunder. Gratis. Ingen registrering.
             </p>
-            <Button asChild className="mt-4">
+            <Button
+              asChild
+              className="mt-4 transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
+            >
               <Link to="/">
                 Kjør sjekken
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </Button>
-          </div>
+          </FadeUp>
 
           <TopicCluster currentSlug={article.slug} />
           <AuthorBio author={author} />
