@@ -208,18 +208,35 @@ async function fetchText(
 async function fetchHeadOrGet(
   url: string,
   init: RequestInit & { timeoutMs?: number } = {},
-): Promise<{ status: number; finalUrl: string; redirects: number; location: string | null } | null> {
+): Promise<{
+  status: number;
+  firstStatus: number;
+  firstLocation: string | null;
+  finalUrl: string;
+  redirects: number;
+  location: string | null;
+} | null> {
   // HEAD followed by manual redirect tracking is fragile under undici; just
   // do GET with redirect: 'manual' inside follow-loop.
+  //
+  // `firstStatus` + `firstLocation` capture redirektens egne tall (308, 301,
+  // 307 osv.) før vi følger den videre. Uten dette ville www_redirect-sjekken
+  // sett 200 på begge varianter etter at fetch fulgte chain-en til apex.
   let current = url;
   let redirects = 0;
   let lastStatus = 0;
   let lastLocation: string | null = null;
+  let firstStatus = 0;
+  let firstLocation: string | null = null;
   for (let i = 0; i < 5; i++) {
     const res = await fetchWithTimeout(current, { ...init, redirect: "manual" });
     if (!res) return null;
     lastStatus = res.status;
     const loc = res.headers.get("location");
+    if (i === 0) {
+      firstStatus = res.status;
+      firstLocation = loc;
+    }
     if (res.status >= 300 && res.status < 400 && loc) {
       redirects++;
       lastLocation = loc;
@@ -230,9 +247,9 @@ async function fetchHeadOrGet(
       }
       continue;
     }
-    return { status: lastStatus, finalUrl: current, redirects, location: lastLocation };
+    return { status: lastStatus, firstStatus, firstLocation, finalUrl: current, redirects, location: lastLocation };
   }
-  return { status: lastStatus, finalUrl: current, redirects, location: lastLocation };
+  return { status: lastStatus, firstStatus, firstLocation, finalUrl: current, redirects, location: lastLocation };
 }
 
 // ---- Sjekker ----
@@ -568,10 +585,12 @@ async function runScan(domain: string): Promise<ScanIssue[]> {
 
   // 8. www_redirect
   {
-    const apexStatus = apexHead?.status ?? 0;
-    const wwwStatus = wwwHead?.status ?? 0;
-    const apexLoc = apexHead?.location ?? "";
-    const wwwLoc = wwwHead?.location ?? "";
+    // Bruk firstStatus (selve redirektens kode), ikke status (sluttstatus
+    // etter chain). Ellers ville en 308 → 200 chain bli sett som 200.
+    const apexStatus = apexHead?.firstStatus ?? 0;
+    const wwwStatus = wwwHead?.firstStatus ?? 0;
+    const apexLoc = apexHead?.firstLocation ?? "";
+    const wwwLoc = wwwHead?.firstLocation ?? "";
 
     let pts = 0;
     let summary = "";
