@@ -222,9 +222,15 @@ export default function ArticlePost() {
             </Button>
           </FadeUp>
 
-          <TopicCluster currentSlug={article.slug} />
-          <AuthorBio author={author} />
-          <RelatedArticles currentSlug={article.slug} />
+          <FadeUp>
+            <TopicCluster currentSlug={article.slug} />
+          </FadeUp>
+          <FadeUp delay={80}>
+            <AuthorBio author={author} />
+          </FadeUp>
+          <FadeUp delay={160}>
+            <RelatedArticles currentSlug={article.slug} />
+          </FadeUp>
         </article>
 
         <aside className="hidden lg:block">

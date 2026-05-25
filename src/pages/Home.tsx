@@ -1,11 +1,22 @@
 import { Link } from "react-router-dom";
 import {
+  Activity,
+  Anchor,
   ArrowRight,
   Bot,
+  BookText,
   CheckCircle2,
+  Code2,
   FileSearch,
   Gauge,
+  GitMerge,
+  Map as MapIcon,
+  MessageCircle,
+  Network,
+  Shield,
   ShieldCheck,
+  Tag,
+  type LucideIcon,
 } from "lucide-react";
 import { ScanForm } from "@/components/ScanForm";
 import {
@@ -14,8 +25,27 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { CHECK_DEFINITIONS } from "@/lib/checks";
+import { CHECK_DEFINITIONS, type CheckId } from "@/lib/checks";
 import { FadeUp } from "@/components/FadeUp";
+
+/**
+ * Semantisk ikon per sjekk. Velger ikoner som visualiserer hva sjekken
+ * faktisk gjør — heartbeat for «svarer», tag for «skiltet», kode for
+ * «visittkort», skjold for «gjesteliste», map for «kart» osv. Holder
+ * grid-en visuelt rik istedenfor 10 like ikoner.
+ */
+const CHECK_ICON: Record<CheckId, LucideIcon> = {
+  reachable: Activity,
+  meta: Tag,
+  schema_org: Code2,
+  key_schemas: BookText,
+  robots_ai: Shield,
+  sitemap: MapIcon,
+  llms_txt: MessageCircle,
+  www_redirect: GitMerge,
+  same_as: Network,
+  canonical_resolves: Anchor,
+};
 
 const FAQS: Array<{ q: string; a: React.ReactNode }> = [
   {
@@ -317,30 +347,45 @@ export default function Home() {
           title="Ti AEO-signaler — forklart i klartekst"
           sub="Hver sjekk her er noe AI-motorer som ChatGPT og Gemini bryr seg om. Ikke noe teknisk-prat — bare hva det betyr for at kunder skal finne deg."
         />
-        <ol className="mt-12 grid gap-4 sm:grid-cols-2">
-          {CHECK_DEFINITIONS.map((c, i) => (
-            <FadeUp
-              key={c.id}
-              as="li"
-              delay={(i % 2) * 60 + Math.floor(i / 2) * 40}
-              className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.2)] sm:p-6"
-            >
-              <span
-                aria-hidden
-                className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 font-mono text-[13px] font-bold text-accent ring-1 ring-inset ring-accent/20 transition-colors group-hover:bg-accent/15"
+        <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CHECK_DEFINITIONS.map((c, i) => {
+            const Icon = CHECK_ICON[c.id];
+            return (
+              <FadeUp
+                key={c.id}
+                as="li"
+                delay={(i % 3) * 70 + Math.floor(i / 3) * 50}
+                className="group relative isolate flex flex-col rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-card/60 hover:shadow-[0_16px_36px_-18px_rgba(13,148,136,0.28)] sm:p-6"
               >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="flex flex-col gap-1.5">
-                <h3 className="font-display text-[15px] font-semibold text-foreground sm:text-base">
+                {/* Tallet flyter som backdrop-numeral, samme editorial-
+                    grep som Steps-kortene for visuell sammenheng. */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-1 -top-2 -z-10 select-none font-display text-[5.5rem] font-bold leading-none tracking-tighter text-accent/[0.06] transition-colors duration-300 group-hover:text-accent/[0.10]"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="relative mb-4 flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent ring-1 ring-inset ring-accent/20 transition-all duration-200 group-hover:bg-accent group-hover:text-accent-foreground group-hover:ring-accent">
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </div>
+                </div>
+                <h3 className="relative font-display text-[15px] font-semibold leading-tight text-foreground sm:text-base">
                   {c.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-foreground/65">
+                <p className="relative mt-2 text-sm leading-relaxed text-foreground/65">
                   {c.plain.what}
                 </p>
-              </div>
-            </FadeUp>
-          ))}
+                <div className="relative mt-4 flex items-center justify-between gap-2 border-t border-border/50 pt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/45">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span aria-hidden className="h-1 w-1 rounded-full bg-accent/70" />
+                    {c.effort.timeToFix}
+                  </span>
+                  <span>{c.effort.difficulty}</span>
+                </div>
+              </FadeUp>
+            );
+          })}
         </ol>
       </section>
 
@@ -353,18 +398,20 @@ export default function Home() {
             title="Korte, ærlige svar"
             sub="Mangler noe? Send en e-post til hei@sjekksynlighet.no — vi svarer innen samme dag."
           />
-          <Accordion
-            type="single"
-            collapsible
-            className="mt-10 overflow-hidden rounded-2xl border border-border bg-background/80 px-5 backdrop-blur sm:px-7"
-          >
-            {FAQS.map((f, i) => (
-              <AccordionItem key={i} value={`item-${i}`}>
-                <AccordionTrigger>{f.q}</AccordionTrigger>
-                <AccordionContent>{f.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <FadeUp>
+            <Accordion
+              type="single"
+              collapsible
+              className="mt-10 overflow-hidden rounded-2xl border border-border bg-background/80 px-5 backdrop-blur sm:px-7"
+            >
+              {FAQS.map((f, i) => (
+                <AccordionItem key={i} value={`item-${i}`}>
+                  <AccordionTrigger>{f.q}</AccordionTrigger>
+                  <AccordionContent>{f.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </FadeUp>
         </div>
       </section>
 

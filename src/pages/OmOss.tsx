@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ExternalLink, ShieldCheck } from "lucide-react";
 import { MetaHead } from "@/articles/MetaHead";
+import { FadeUp } from "@/components/FadeUp";
 
 /**
  * /om — opphavshistorie + naturlig Medcom-attribusjon.
@@ -23,29 +24,31 @@ export default function OmOss() {
       />
 
       <section className="container mx-auto max-w-3xl px-4 py-12 sm:py-20">
-        <header className="mb-10 border-b border-border pb-6">
+        <FadeUp immediate as="header" className="mb-10 border-b border-border pb-6">
           <p className="text-sm font-medium uppercase tracking-[0.14em] text-accent">
             Om
           </p>
           <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             Hvem står bak Sjekksynlighet?
           </h1>
-        </header>
+        </FadeUp>
 
         <article className="space-y-8 text-foreground/85">
-          <div
-            data-quick-answer
-            className="quick-answer not-prose"
-          >
-            <strong>Kort fortalt:</strong> Sjekksynlighet er bygd og driftet
-            av <a href="https://www.medcom.no" target="_blank" rel="noopener noreferrer" className="text-accent font-medium hover:underline">Medcom AS</a>,
-            et norsk webbyrå med spesialisering på AEO (Answer Engine
-            Optimization). Vi laget det fordi vi var lei av at norske
-            bedrifter ikke hadde et gratis sted å sjekke sin AI-synlighet
-            uten å betale en konsulent.
-          </div>
+          <FadeUp immediate delay={80}>
+            <div
+              data-quick-answer
+              className="quick-answer not-prose"
+            >
+              <strong>Kort fortalt:</strong> Sjekksynlighet er bygd og driftet
+              av <a href="https://www.medcom.no" target="_blank" rel="noopener noreferrer" className="text-accent font-medium hover:underline">Medcom AS</a>,
+              et norsk webbyrå med spesialisering på AEO (Answer Engine
+              Optimization). Vi laget det fordi vi var lei av at norske
+              bedrifter ikke hadde et gratis sted å sjekke sin AI-synlighet
+              uten å betale en konsulent.
+            </div>
+          </FadeUp>
 
-          <section className="space-y-4">
+          <FadeUp as="section" className="space-y-4">
             <h2 className="font-display text-2xl font-semibold tracking-tight">
               Hvorfor vi laget det
             </h2>
@@ -67,9 +70,9 @@ export default function OmOss() {
               ned for å se score»-mur. Vi mener AEO-grunnsteiner er offentlig
               kunnskap — ikke noe vi gjemmer bak en betalvegg.
             </p>
-          </section>
+          </FadeUp>
 
-          <section className="space-y-4">
+          <FadeUp as="section" className="space-y-4">
             <h2 className="font-display text-2xl font-semibold tracking-tight">
               Operatøren
             </h2>
@@ -110,7 +113,7 @@ export default function OmOss() {
                 href="https://www.medcom.no"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground/85 hover:border-accent/30 hover:text-accent transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground/85 hover:border-accent/30 hover:text-accent hover:-translate-y-0.5 transition-all duration-200"
               >
                 Besøk medcom.no
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden />
@@ -119,15 +122,15 @@ export default function OmOss() {
                 href="https://www.medcom.no/team"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground/85 hover:border-accent/30 hover:text-accent transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground/85 hover:border-accent/30 hover:text-accent hover:-translate-y-0.5 transition-all duration-200"
               >
                 Teamet bak
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden />
               </a>
             </div>
-          </section>
+          </FadeUp>
 
-          <section className="space-y-4">
+          <FadeUp as="section" className="space-y-4">
             <h2 className="font-display text-2xl font-semibold tracking-tight">
               Personvern og data
             </h2>
@@ -144,9 +147,9 @@ export default function OmOss() {
               </Link>
               .
             </p>
-          </section>
+          </FadeUp>
 
-          <section className="space-y-4">
+          <FadeUp as="section" className="space-y-4">
             <h2 className="font-display text-2xl font-semibold tracking-tight">
               Få i gang en sjekk
             </h2>
@@ -156,13 +159,13 @@ export default function OmOss() {
             </p>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-soft"
+              className="group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground transition-[transform,colors,box-shadow] duration-200 hover:bg-accent-soft hover:scale-[1.03] hover:shadow-[0_8px_24px_-12px_hsl(var(--accent)/0.55)] active:scale-[0.98]"
             >
               <ShieldCheck className="h-4 w-4" aria-hidden />
               Sjekk synlighet gratis
-              <ArrowRight className="h-4 w-4" aria-hidden />
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
             </Link>
-          </section>
+          </FadeUp>
         </article>
       </section>
     </>
