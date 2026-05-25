@@ -169,9 +169,9 @@ export const CHECK_DEFINITIONS: CheckDefinition[] = [
       howToFix: "Velg én variant (vanligvis uten «www»). Be utvikleren din eller domeneleverandøren din sette opp en permanent omdirigering (301) fra den andre.",
     },
     technical: {
-      what: "Vi henter begge variantene og sjekker at den ene 301-redirecter til den andre (ikke 307 og ikke begge svarer 200).",
-      why: "307-redirect eller dobbel 200-respons splitter Google-equity. Schema og canonical må også peke på samme variant.",
-      howToFix: "Sett opp en permanent 301-redirect fra ikke-kanonisk variant (f.eks. www → apex) i hosting-konfigurasjonen. Verifiser at canonical-tag og sameAs også bruker kanonisk URL.",
+      what: "Vi henter begge variantene og sjekker at den ene 301/308-redirecter til den andre (ikke 302/307 og ikke begge svarer 200).",
+      why: "302/307-redirect eller dobbel 200-respons splitter Google-equity. 301 og 308 er begge permanente og fungerer likt for SEO/AEO. Schema og canonical må også peke på samme variant.",
+      howToFix: "Sett opp en permanent redirect (301 eller 308) fra ikke-kanonisk variant (f.eks. www → apex) i hosting-konfigurasjonen. Vercel bruker 308 by default — det er helt OK. Verifiser at canonical-tag og sameAs også bruker kanonisk URL.",
     },
     effort: { timeToFix: "15 min", difficulty: "Utvikler" },
   },
