@@ -3,6 +3,7 @@ import { ArrowUpRight, BookOpen, Compass } from "lucide-react";
 import { MetaHead } from "./MetaHead";
 import { articles } from "./articles";
 import { TOPIC_CLUSTERS, getClusterForSlug } from "./topics";
+import { FadeUp } from "@/components/FadeUp";
 
 /**
  * /artikler — index over alle artikler, gruppert per topic-cluster.
@@ -27,7 +28,7 @@ export default function ArticleIndex() {
       />
 
       <section className="container mx-auto max-w-5xl px-4 py-12 sm:py-16">
-        <header className="mb-12 flex flex-col items-center text-center">
+        <FadeUp immediate as="header" className="mb-12 flex flex-col items-center text-center">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-inset ring-accent/25 text-accent">
             <BookOpen className="h-5 w-5" aria-hidden />
           </span>
@@ -43,7 +44,7 @@ export default function ArticleIndex() {
             Vi sjekker ti tekniske AEO-signaler. Her forklarer vi hva de er,
             hvorfor de teller, og hvordan du fikser dem — uten teknisk-prat.
           </p>
-        </header>
+        </FadeUp>
 
         {articles.length === 0 ? (
           <EmptyState />
@@ -71,8 +72,10 @@ export default function ArticleIndex() {
                     </div>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {items.map((a) => (
-                      <ArticleCard key={a.slug} article={a} isPillar={a.slug === cluster.pillarSlug} />
+                    {items.map((a, i) => (
+                      <FadeUp key={a.slug} delay={i * 70}>
+                        <ArticleCard article={a} isPillar={a.slug === cluster.pillarSlug} />
+                      </FadeUp>
                     ))}
                   </div>
                 </div>

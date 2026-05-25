@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Globe, RotateCcw } from "lucide-react";
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { IssueCard } from "@/components/IssueCard";
 import { Button } from "@/components/ui/button";
+import { FadeUp } from "@/components/FadeUp";
 import {
   loadCachedScan,
   tierExplanation,
@@ -144,7 +145,9 @@ export default function Result() {
         </div>
         <div className="grid gap-3">
           {topIssues.map((issue, i) => (
-            <IssueCard key={issue.id} issue={issue} defaultOpen={i === 0} />
+            <FadeUp key={issue.id} delay={i * 90}>
+              <IssueCard issue={issue} defaultOpen={i === 0} />
+            </FadeUp>
           ))}
           {topIssues.length === 0 && (
             <div className="rounded-2xl border border-dashed border-good/40 bg-good/5 p-8 text-center">
