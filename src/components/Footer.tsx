@@ -23,7 +23,7 @@ export function Footer() {
                 href="https://www.medcom.no"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent font-medium underline-offset-4 hover:underline"
+                className="text-accent font-medium underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
               >
                 Medcom AS
               </a>{" "}
@@ -33,14 +33,14 @@ export function Footer() {
                 Behandlingsansvarlig etter GDPR — se{" "}
                 <Link
                   to="/personvern"
-                  className="text-accent underline-offset-4 hover:underline"
+                  className="text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
                 >
                   personvernerklæringen
                 </Link>
                 {" "}eller{" "}
                 <Link
                   to="/om"
-                  className="text-accent underline-offset-4 hover:underline"
+                  className="text-accent underline underline-offset-4 decoration-accent/40 hover:decoration-accent"
                 >
                   les mer om oss
                 </Link>
