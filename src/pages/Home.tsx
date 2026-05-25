@@ -4,7 +4,7 @@ import {
   Bot,
   CheckCircle2,
   FileSearch,
-  Sparkles,
+  Gauge,
   ShieldCheck,
 } from "lucide-react";
 import { ScanForm } from "@/components/ScanForm";
@@ -107,7 +107,7 @@ const STEPS = [
       "Schema, robots.txt for AI-crawlere, sitemap, canonical, llms.txt, www-redirect og mer — i parallell mot ditt live-domene.",
   },
   {
-    icon: Sparkles,
+    icon: Gauge,
     title: "Du får en score og topp-5 mangler",
     body:
       "Resultatet er klart med en gang, og en kopi sendes til e-posten din. Du ser konkret hva som mangler og hvorfor det betyr noe.",
@@ -131,9 +131,19 @@ export default function Home() {
 
         <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
           <div className="flex flex-col gap-6">
-            <FadeUp immediate delay={0} as="span" className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/25 bg-white/70 px-3 py-1 text-xs font-semibold text-accent shadow-sm backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden />
-              Gratis · 30 sekunder · Ingen registrering
+            <FadeUp immediate delay={0} as="div" className="flex items-center gap-3">
+              <span
+                aria-hidden
+                className="relative inline-flex h-2 w-2"
+              >
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+              </span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/55">
+                Gratis<span className="mx-2 text-foreground/25">/</span>
+                30 sek<span className="mx-2 text-foreground/25">/</span>
+                Ingen registrering
+              </span>
             </FadeUp>
 
             <FadeUp immediate delay={80} as="h1" className="text-balance font-display text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.02em] sm:text-5xl lg:text-[3.5rem]">
@@ -212,20 +222,24 @@ export default function Home() {
                 key={s.title}
                 as="li"
                 delay={i * 100}
-                className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-background p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[0_8px_24px_-12px_rgba(13,148,136,0.25)]"
+                className="group relative isolate overflow-hidden rounded-2xl border border-border bg-background p-7 shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_12px_32px_-16px_rgba(13,148,136,0.3)]"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
-                    <s.icon className="h-5 w-5" aria-hidden />
-                  </div>
-                  <span className="font-mono text-xs font-bold tracking-wider text-accent">
-                    0{i + 1}
-                  </span>
+                {/* Editorial backdrop-numeral. Sitter i hjørnet og rotert
+                    litt for liv. select-none + pointer-events-none så det
+                    aldri kommer i veien for interaksjon. */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-3 -top-6 -z-10 select-none font-display text-[9rem] font-bold leading-none tracking-tighter text-accent/[0.07] transition-colors duration-300 group-hover:text-accent/[0.12]"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10 text-accent ring-1 ring-inset ring-accent/15 transition-colors group-hover:bg-accent/15">
+                  <s.icon className="h-5 w-5" aria-hidden />
                 </div>
-                <h3 className="font-display text-lg font-semibold leading-tight">
+                <h3 className="relative mt-6 font-display text-lg font-semibold leading-tight">
                   {s.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-foreground/65">
+                <p className="relative mt-2 text-sm leading-relaxed text-foreground/65">
                   {s.body}
                 </p>
               </FadeUp>
@@ -233,6 +247,67 @@ export default function Home() {
           </ol>
         </div>
         <SectionDivider position="bottom" />
+      </section>
+
+      {/* STAT BAND — visuelt avbrudd med ekte tall fra artikkelmaterialet
+          vårt. Dark bakgrunn for å bryte cream-rytmen og gi siden mer
+          dybde og puls. */}
+      <section className="relative overflow-hidden bg-foreground py-20 sm:py-24">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 30%, hsl(var(--accent) / 0.18) 0px, transparent 50%), radial-gradient(circle at 80% 70%, hsl(var(--accent-soft) / 0.14) 0px, transparent 55%)",
+          }}
+        />
+        <div className="container relative mx-auto max-w-5xl">
+          <FadeUp className="mb-12 max-w-2xl">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-soft/80">
+              <span aria-hidden className="mr-2 inline-block h-px w-6 align-middle bg-accent-soft/40" />
+              Hvorfor det haster
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-background sm:text-[2.5rem]">
+              Du er ikke lenger i én søkemotor. Du er i fem.
+            </h2>
+          </FadeUp>
+          <div className="grid gap-12 sm:grid-cols-2 sm:gap-16">
+            <FadeUp delay={120}>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-[5.5rem] font-bold leading-none tracking-tight text-accent-soft sm:text-[6.5rem]">
+                  47
+                </span>
+                <span className="font-display text-3xl font-semibold text-accent-soft/60 sm:text-4xl">
+                  %
+                </span>
+              </div>
+              <p className="mt-4 max-w-sm text-balance text-[15px] leading-relaxed text-background/75">
+                av norske Google-treff har AI Overviews på toppen som ofte
+                erstatter trafikken til de organiske resultatene.
+              </p>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-background/35">
+                Per mai 2026
+              </p>
+            </FadeUp>
+            <FadeUp delay={220}>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-[5.5rem] font-bold leading-none tracking-tight text-accent-soft sm:text-[6.5rem]">
+                  35
+                </span>
+                <span className="font-display text-3xl font-semibold text-accent-soft/60 sm:text-4xl">
+                  %
+                </span>
+              </div>
+              <p className="mt-4 max-w-sm text-balance text-[15px] leading-relaxed text-background/75">
+                av norske nettsøk skjer nå direkte i ChatGPT, Perplexity
+                og Gemini. Brukerne ser aldri en Google-side.
+              </p>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-background/35">
+                Industri-data 2026
+              </p>
+            </FadeUp>
+          </div>
+        </div>
       </section>
 
       {/* WHAT WE CHECK */}
@@ -294,24 +369,42 @@ export default function Home() {
       </section>
 
       {/* CLOSER */}
-      <FadeUp as="section" className="container mx-auto max-w-3xl py-20 text-center sm:py-28">
-        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 ring-1 ring-inset ring-accent/20">
-          <ShieldCheck className="h-7 w-7 text-accent" aria-hidden />
-        </div>
-        <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          Klar til å se hvor du står?
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-pretty text-foreground/70">
-          Skroll opp og fyll inn domenet. Du får en score og en konkret tiltakliste på 30 sekunder — alt kommer også på e-posten din.
-        </p>
-        <a
-          href="#main"
-          className="mt-7 inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_-12px_hsl(var(--accent)/0.65)] transition-[colors,transform,box-shadow] duration-200 hover:bg-accent-soft hover:scale-[1.03] hover:shadow-[0_2px_4px_rgba(0,0,0,0.06),0_16px_32px_-12px_hsl(var(--accent)/0.55)] active:scale-[0.98]"
+      <section className="relative isolate overflow-hidden py-24 sm:py-32">
+        {/* Stor halo-gradient bak hele seksjonen for å løfte CTA-en
+            uten å bytte bakgrunnsfarge. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
         >
-          Start sjekken
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
-        </a>
-      </FadeUp>
+          <div className="absolute left-1/2 top-1/2 h-[700px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-accent/[0.10] via-accent-soft/[0.06] to-transparent blur-3xl" />
+        </div>
+
+        <FadeUp className="container relative mx-auto max-w-3xl text-center">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+            <span aria-hidden className="mr-2 inline-block h-px w-6 align-middle bg-accent/40" />
+            Sjekken er gratis
+            <span aria-hidden className="ml-2 inline-block h-px w-6 align-middle bg-accent/40" />
+          </p>
+          <h2 className="mt-4 font-display text-[2.25rem] font-semibold leading-[1.05] tracking-tight sm:text-[3rem]">
+            Du vet på 30 sekunder hva som <span className="text-accent">mangler</span>.
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-foreground/65 sm:text-lg">
+            Skroll opp, fyll inn domenet, og se nøyaktig hvilke AEO-grunnsteiner
+            siden din har og hvilke som mangler. Resultatet kommer også på e-post.
+          </p>
+          <a
+            href="#main"
+            className="group mt-9 inline-flex items-center gap-2.5 rounded-2xl bg-foreground px-7 py-4 text-[15px] font-semibold text-background shadow-[0_2px_4px_rgba(0,0,0,0.08),0_16px_36px_-16px_rgba(15,20,25,0.5)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-accent hover:scale-[1.03] hover:shadow-[0_4px_8px_rgba(0,0,0,0.08),0_24px_48px_-16px_hsl(var(--accent)/0.55)] active:scale-[0.98]"
+          >
+            <ShieldCheck className="h-4 w-4" aria-hidden />
+            Start gratis sjekk
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />
+          </a>
+          <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-foreground/40">
+            Ingen registrering · Ingen kredittkort · Resultatet ditt for evig
+          </p>
+        </FadeUp>
+      </section>
     </>
   );
 }
