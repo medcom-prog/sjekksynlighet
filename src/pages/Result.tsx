@@ -75,7 +75,7 @@ export default function Result() {
   return (
     <section className="container mx-auto max-w-5xl px-4 py-12 sm:py-16">
       {/* HEADER */}
-      <div className="flex flex-col items-center gap-2 text-center">
+      <FadeUp immediate className="flex flex-col items-center gap-2 text-center">
         <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
           <span aria-hidden className="h-px w-6 bg-accent/40" />
           Synlighetscheck
@@ -102,10 +102,10 @@ export default function Result() {
             })}
           </span>
         </div>
-      </div>
+      </FadeUp>
 
       {/* GAUGE */}
-      <div className="relative mx-auto mt-10 max-w-3xl">
+      <FadeUp immediate delay={120} className="relative mx-auto mt-10 max-w-3xl">
         <div
           aria-hidden
           className="absolute -inset-2 rounded-[28px] bg-gradient-to-br from-accent/10 via-transparent to-accent-soft/10 blur-2xl"
@@ -124,11 +124,11 @@ export default function Result() {
             <strong>Kort fortalt:</strong> {tierExplanation(tier)}
           </p>
         </div>
-      </div>
+      </FadeUp>
 
       {/* TOP ISSUES */}
       <div className="mt-14">
-        <div className="mb-6 flex items-end justify-between gap-4">
+        <FadeUp className="mb-6 flex items-end justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
               Topp {topIssues.length} mangler
@@ -142,7 +142,7 @@ export default function Result() {
             </p>
           </div>
           <Globe className="hidden h-5 w-5 text-foreground/30 sm:block" aria-hidden />
-        </div>
+        </FadeUp>
         <div className="grid gap-3">
           {topIssues.map((issue, i) => (
             <FadeUp key={issue.id} delay={i * 90}>
@@ -165,7 +165,8 @@ export default function Result() {
 
       {/* ALL CHECKS COLLAPSED */}
       {remainingIssues.length > 0 && (
-        <details className="group/details mt-10 overflow-hidden rounded-2xl border border-border bg-card transition-shadow open:shadow-sm">
+        <FadeUp className="mt-10">
+        <details className="group/details overflow-hidden rounded-2xl border border-border bg-card transition-shadow open:shadow-sm">
           <summary className="flex cursor-pointer select-none items-center justify-between gap-3 px-5 py-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-muted/50">
             <span>
               Resterende {remainingIssues.length} sjekker
@@ -180,10 +181,11 @@ export default function Result() {
             ))}
           </div>
         </details>
+        </FadeUp>
       )}
 
       {/* META */}
-      <div className="mt-14 flex flex-col items-center gap-4 border-t border-border pt-10 text-center">
+      <FadeUp className="mt-14 flex flex-col items-center gap-4 border-t border-border pt-10 text-center">
         <p className="max-w-2xl text-sm leading-relaxed text-foreground/65">
           Resultatet er sendt til e-posten din. Hvis du la inn telefonnummer,
           kan vi ringe deg for å gå gjennom score-en og foreslå tiltak.
@@ -199,7 +201,7 @@ export default function Result() {
           Nivå: <span className="text-foreground/65">{tierLabel(tier)}</span> ·{" "}
           {scan.score}/100
         </p>
-      </div>
+      </FadeUp>
     </section>
   );
 }

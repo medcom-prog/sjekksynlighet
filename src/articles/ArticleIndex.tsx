@@ -58,7 +58,7 @@ export default function ArticleIndex() {
               if (items.length === 0) return null;
               return (
                 <div key={cluster.slug} className="mb-14">
-                  <div className="mb-5 flex items-start gap-3">
+                  <FadeUp className="mb-5 flex items-start gap-3">
                     <span className="mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent ring-1 ring-inset ring-accent/20">
                       <Compass className="h-3.5 w-3.5" aria-hidden />
                     </span>
@@ -70,10 +70,10 @@ export default function ArticleIndex() {
                         {cluster.description}
                       </p>
                     </div>
-                  </div>
+                  </FadeUp>
                   <div className="grid gap-4 sm:grid-cols-2">
                     {items.map((a, i) => (
-                      <FadeUp key={a.slug} delay={i * 70}>
+                      <FadeUp key={a.slug} delay={i * 70 + 100}>
                         <ArticleCard article={a} isPillar={a.slug === cluster.pillarSlug} />
                       </FadeUp>
                     ))}
@@ -84,12 +84,14 @@ export default function ArticleIndex() {
 
             {orphanArticles.length > 0 && (
               <div className="mb-14">
-                <h2 className="mb-5 font-display text-xl font-semibold tracking-tight">
+                <FadeUp as="h2" className="mb-5 font-display text-xl font-semibold tracking-tight">
                   Andre artikler
-                </h2>
+                </FadeUp>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {orphanArticles.map((a) => (
-                    <ArticleCard key={a.slug} article={a} />
+                  {orphanArticles.map((a, i) => (
+                    <FadeUp key={a.slug} delay={i * 70 + 100}>
+                      <ArticleCard article={a} />
+                    </FadeUp>
                   ))}
                 </div>
               </div>
