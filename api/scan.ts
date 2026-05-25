@@ -577,26 +577,32 @@ async function runScan(domain: string): Promise<ScanIssue[]> {
     let summary = "";
     let sev: IssueSeverity = "warning";
 
+    // Permanente redirects: 301 (klassisk) ELLER 308 (RFC 7538, Vercel-
+    // default). Begge er semantisk «permanent» og Google/AI-crawlere
+    // behandler dem likt. Midlertidige: 302/307 — splitter equity.
+    const isPermRedir = (s: number) => s === 301 || s === 308;
+    const isTempRedir = (s: number) => s === 302 || s === 307;
     const bothOk = apexStatus === 200 && wwwStatus === 200;
-    const apex301 = apexStatus === 301 && wwwStatus === 200;
-    const www301 = wwwStatus === 301 && apexStatus === 200;
-    const apex307 = apexStatus === 307 || apexStatus === 302;
-    const www307 = wwwStatus === 307 || wwwStatus === 302;
+    const apexPerm = isPermRedir(apexStatus) && wwwStatus === 200;
+    const wwwPerm = isPermRedir(wwwStatus) && apexStatus === 200;
+    const apexTemp = isTempRedir(apexStatus);
+    const wwwTemp = isTempRedir(wwwStatus);
 
-    if (apex301 || www301) {
+    if (apexPerm || wwwPerm) {
       pts = 10;
       sev = "info";
-      summary = apex301
-        ? `Apex (${apex}) 301-redirecter til www-variant — konsekvent og perfekt for SEO.`
-        : `www (${www}) 301-redirecter til apex-variant — konsekvent og perfekt for SEO.`;
+      const code = apexPerm ? apexStatus : wwwStatus;
+      summary = apexPerm
+        ? `Apex (${apex}) ${code}-redirecter til www-variant — konsekvent og perfekt for SEO.`
+        : `www (${www}) ${code}-redirecter til apex-variant — konsekvent og perfekt for SEO.`;
     } else if (bothOk) {
       pts = 3;
       sev = "warning";
       summary = "Både apex og www svarer 200 OK uten redirect — Google indekserer begge og splitter equity. Sett opp 301 fra den ene til den andre.";
-    } else if (apex307 || www307) {
+    } else if (apexTemp || wwwTemp) {
       pts = 5;
       sev = "warning";
-      summary = "Redirect mellom apex og www er 302/307 (midlertidig). Bytt til 301 (permanent) for å konsolidere SEO-signaler.";
+      summary = "Redirect mellom apex og www er 302/307 (midlertidig). Bytt til 301 eller 308 (permanent) for å konsolidere SEO-signaler.";
     } else if (apexStatus === 0 && wwwStatus === 0) {
       pts = 0;
       sev = "critical";
@@ -604,7 +610,7 @@ async function runScan(domain: string): Promise<ScanIssue[]> {
     } else {
       pts = 4;
       sev = "warning";
-      summary = `Apex svarer ${apexStatus || "ikke"}, www svarer ${wwwStatus || "ikke"}. Sjekk at én av variantene 301-redirecter til den andre.`;
+      summary = `Apex svarer ${apexStatus || "ikke"}, www svarer ${wwwStatus || "ikke"}. Sjekk at én av variantene 301/308-redirecter til den andre.`;
     }
     issues.push(
       buildIssue({
