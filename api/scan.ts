@@ -177,11 +177,14 @@ async function fetchWithTimeout(
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
+    // redirect kommer fra ...rest (default "follow" hvis ikke spesifisert).
+    // IKKE hardkod "follow" etter spread — fetchHeadOrGet trenger "manual"
+    // for å fange opp 308/301 fra første respons før den følger chain-en.
     const res = await fetch(url, {
+      redirect: "follow",
       ...rest,
       signal: ctrl.signal,
       headers: { "User-Agent": UA, Accept: "*/*", ...rest.headers },
-      redirect: "follow",
     });
     return res;
   } catch {
