@@ -347,14 +347,14 @@ export default function Home() {
           title="Ti AEO-signaler — forklart i klartekst"
           sub="Hver sjekk her er noe AI-motorer som ChatGPT og Gemini bryr seg om. Ikke noe teknisk-prat — bare hva det betyr for at kunder skal finne deg."
         />
-        <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="mt-12 grid gap-4 sm:grid-cols-2">
           {CHECK_DEFINITIONS.map((c, i) => {
             const Icon = CHECK_ICON[c.id];
             return (
               <FadeUp
                 key={c.id}
                 as="li"
-                delay={(i % 3) * 70 + Math.floor(i / 3) * 50}
+                delay={(i % 2) * 70 + Math.floor(i / 2) * 50}
                 className="group relative isolate flex flex-col rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-card/60 hover:shadow-[0_16px_36px_-18px_rgba(13,148,136,0.28)] sm:p-6"
               >
                 {/* Tallet flyter som backdrop-numeral, samme editorial-
@@ -465,20 +465,23 @@ function SectionHeader({
   title: string;
   sub?: string;
 }) {
+  // Scroll-trigget stagger på eyebrow/title/sub. Hele headeren glir
+  // inn rytmisk når brukeren scroller seksjonen i view, så ingen
+  // section noensinne føles «død» ved første introduksjon.
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+      <FadeUp as="p" delay={0} className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
         <span aria-hidden className="h-px w-6 bg-accent/40" />
         {eyebrow}
         <span aria-hidden className="h-px w-6 bg-accent/40" />
-      </p>
-      <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+      </FadeUp>
+      <FadeUp as="h2" delay={80} className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         {title}
-      </h2>
+      </FadeUp>
       {sub ? (
-        <p className="mx-auto mt-4 max-w-xl text-pretty text-foreground/70">
+        <FadeUp as="p" delay={160} className="mx-auto mt-4 max-w-xl text-pretty text-foreground/70">
           {sub}
-        </p>
+        </FadeUp>
       ) : null}
     </div>
   );
